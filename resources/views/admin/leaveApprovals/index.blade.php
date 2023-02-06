@@ -73,7 +73,7 @@
                         <td>
                             @can('leave_application_show')
                             <a class="btn btn-xs btn-primary"
-                                href="{{ route('admin.leave-applications.show', $leaveApplication->id) }}">
+                                href="{{ route('admin.leave-approvals.show', $leaveApplication->id) }}">
                                 {{ trans('global.view') }}
                             </a>
                             @endcan
@@ -91,9 +91,11 @@
                                 <input type="hidden" name="leave_ends" id="leave_ends" value="{{ old('leave_ends', $leaveApplication->leave_ends) }}">
                                 <input type="hidden" name="notes" id="notes" value="asdfasdfasdfasd asdfasdf">
                                 <input type="hidden" name="approved" id="approved" value="{{$leaveApplication->approved == 0 ? 1:0}}">
-                                <button class="btn btn-xs btn-info" type="submit">
-                                    {{ $leaveApplication->approved == 0? trans('cruds.leaveApproval.approve') : trans('cruds.leaveApproval.reject') }}
-                                </button>
+                                @if($leaveApplication->approved)
+                                <input class="btn btn-xs btn-warning" type="submit" value="{{ trans('cruds.leaveApproval.reject') }}">
+                                @else
+                                <input class="btn btn-xs btn-info" type="submit"  value="{{  trans('cruds.leaveApproval.approve')  }}">
+                                @endif
                             </form>
                             @endcan
 

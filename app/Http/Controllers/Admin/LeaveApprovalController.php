@@ -21,24 +21,6 @@ class LeaveApprovalController extends Controller
         return view('admin.leaveApprovals.index', compact('leaveApplications'));
     }
 
-    public function edit(LeaveApplication $leaveApplication)
-    {
-        abort_if(Gate::denies('leave_approval_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $staff_members = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $leaveApplication->load('staff_member');
-        dd($leaveApplication);
-        return view('admin.leaveApprovals.edit', compact('leaveApplication', 'staff_members'));
-    }
-
-    public function update(UpdateLeaveApprovalRequest $request, LeaveApplication $leaveApplication)
-    {
-        $leaveApplication->update($request->all());
-
-        return redirect()->route('admin.leave-approvals.index');
-    }
-
     public function approved(UpdateLeaveApprovalRequest $request, $id)
     {
         $leaveApplication = LeaveApplication::findOrFail($id);
@@ -47,9 +29,31 @@ class LeaveApprovalController extends Controller
         return redirect()->route('admin.leave-approvals.index');
     }
 
-    public function show(LeaveApproval $leaveApproval)
+    public function edit($id)
+    {
+        abort_if(Gate::denies('leave_approval_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $staff_members = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $leaveApplication = LeaveApplication::findOrFail($id);
+
+        $leaveApplication->load('staff_member');
+
+        return view('admin.leaveApprovals.edit', compact('leaveApplication', 'staff_members'));
+    }
+
+    public function update(UpdateLeaveApprovalRequest $request, $id)
+    {
+        $leaveApplication = LeaveApplication::findOrFail($id);
+
+        $leaveApplication->update($request->all());
+
+        return redirect()->route('admin.leave-approvals.index');
+    }
+
+    public function show($id)
     {
         abort_if(Gate::denies('leave_approval_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $leaveApproval = LeaveApplication::findOrFail($id);
 
         return view('admin.leaveApprovals.show', compact('leaveApproval'));
     }

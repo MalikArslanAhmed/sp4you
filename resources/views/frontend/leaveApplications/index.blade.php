@@ -83,7 +83,7 @@
                                             @endcan
 
                                             @can('leave_application_edit')
-                                            @if($leaveApplication->approved !== 1)
+                                            @if($leaveApplication->editable)
                                                 <a class="btn btn-xs btn-info" href="{{ route('frontend.leave-applications.edit', $leaveApplication->id) }}">
                                                     {{ trans('global.edit') }}
                                                 </a>
@@ -91,7 +91,7 @@
                                             @endcan
 
                                             @can('leave_application_delete')
-                                            @if($leaveApplication->approved !== 1)
+                                            @if($leaveApplication->deleteable)
                                                 <form action="{{ route('frontend.leave-applications.destroy', $leaveApplication->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">

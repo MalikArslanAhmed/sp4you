@@ -83,8 +83,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Leave Approval
     Route::delete('leave-approvals/destroy', 'LeaveApprovalController@massDestroy')->name('leave-approvals.massDestroy');
-    Route::resource('leave-approvals', 'LeaveApprovalController');
+    Route::get('leave-approvals', 'LeaveApprovalController@index')->name('leave-approvals.index');
+    Route::get('leave-approvals/{id}', 'LeaveApprovalController@show')->name('leave-approvals.show');
+    Route::get('leave-approvals/edit/{id}', 'LeaveApprovalController@edit')->name('leave-approvals.edit');
     Route::put('leave-approvals/approved/{id}', 'LeaveApprovalController@approved')->name('leave-approvals.approved');
+    Route::put('leave-approvals/update/{id}', 'LeaveApprovalController@update')->name('leave-approvals.update');
+
     // Invoices
     Route::delete('invoices/destroy', 'InvoicesController@massDestroy')->name('invoices.massDestroy');
     Route::resource('invoices', 'InvoicesController');

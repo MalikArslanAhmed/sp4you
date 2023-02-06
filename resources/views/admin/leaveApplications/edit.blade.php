@@ -54,7 +54,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.leaveApplication.fields.notes_helper') }}</span>
             </div>
-            <div class="form-group">
+            {{-- <div class="form-group">
                 <label for="admin_notes">{{ trans('cruds.leaveApproval.fields.admin_notes') }}</label>
                 <textarea class="form-control {{ $errors->has('admin_notes') ? 'is-invalid' : '' }}" name="admin_notes" id="admin_notes">{{ old('admin_notes', $leaveApplication->admin_notes) }}</textarea>
                 @if($errors->has('admin_notes'))
@@ -102,7 +102,7 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.leaveApplication.fields.approved_helper') }}</span>
-            </div>
+            </div> --}}
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
