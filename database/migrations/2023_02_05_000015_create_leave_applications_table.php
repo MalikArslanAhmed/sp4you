@@ -12,8 +12,11 @@ class CreateLeaveApplicationsTable extends Migration
             $table->bigIncrements('id');
             $table->date('leave_start');
             $table->date('leave_ends');
-            $table->longText('notes')->nullable();
+            $table->longText('user_notes')->nullable();
             $table->boolean('approved')->default(0)->nullable();
+            $table->longText('admin_notes')->nullable();
+            $table->boolean('editable')->default(1)->nullable();
+            $table->boolean('deleteable')->default(1)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

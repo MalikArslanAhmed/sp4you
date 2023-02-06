@@ -64,7 +64,7 @@
                                 {{ $leaveApplication->leave_ends ?? '' }}
                             </td>
                             <td>
-                                {{ $leaveApplication->notes ?? '' }}
+                                {{ $leaveApplication->user_notes ?? '' }}
                             </td>
                             <td>
                                 <span style="display:none">{{ $leaveApplication->approved ?? '' }}</span>
@@ -149,7 +149,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

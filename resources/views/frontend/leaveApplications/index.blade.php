@@ -41,6 +41,9 @@
                                         {{ trans('cruds.leaveApplication.fields.approved') }}
                                     </th>
                                     <th>
+                                        {{ trans('cruds.leaveApplication.fields.admin_notes') }}
+                                    </th>
+                                    <th>
                                         &nbsp;
                                     </th>
                                 </tr>
@@ -61,11 +64,16 @@
                                             {{ $leaveApplication->leave_ends ?? '' }}
                                         </td>
                                         <td>
-                                            {{ $leaveApplication->notes ?? '' }}
+                                            {{ $leaveApplication->user_notes ?? '' }}
                                         </td>
                                         <td>
-                                            <span style="display:none">{{ $leaveApplication->approved ?? '' }}</span>
-                                            <input type="checkbox" disabled="disabled" {{ $leaveApplication->approved ? 'checked' : '' }}>
+                                            {{-- <span style="display:none">{{ $leaveApplication->approved ?? '' }}</span>
+                                            <input type="checkbox" disabled="disabled" {{ $leaveApplication->approved ? 'checked' : '' }}> --}}
+                                        {{ $leaveApplication->approved ? 'Yes':'No' }}
+
+                                        </td>
+                                        <td>
+                                            {{ $leaveApplication->admin_notes ?? '' }}
                                         </td>
                                         <td>
                                             @can('leave_application_show')
@@ -75,17 +83,21 @@
                                             @endcan
 
                                             @can('leave_application_edit')
+                                            @if($leaveApplication->approved !== 1)
                                                 <a class="btn btn-xs btn-info" href="{{ route('frontend.leave-applications.edit', $leaveApplication->id) }}">
                                                     {{ trans('global.edit') }}
                                                 </a>
+                                            @endif
                                             @endcan
 
                                             @can('leave_application_delete')
+                                            @if($leaveApplication->approved !== 1)
                                                 <form action="{{ route('frontend.leave-applications.destroy', $leaveApplication->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                                     <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
                                                 </form>
+                                            @endif
                                             @endcan
 
                                         </td>
@@ -147,7 +159,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

@@ -17,7 +17,7 @@
                 <tbody>
                     <tr>
                         <th>
-                            {{ trans('cruds.leaveApplication.fields.id') }}
+                            {{ trans('cruds.leaveApproval.fields.id') }}
                         </th>
                         <td>
                             {{ $leaveApplication->id }}
@@ -25,7 +25,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.leaveApplication.fields.staff_member') }}
+                            {{ trans('cruds.leaveApproval.fields.staff_member') }}
                         </th>
                         <td>
                             {{ $leaveApplication->staff_member->name ?? '' }}
@@ -33,7 +33,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.leaveApplication.fields.leave_start') }}
+                            {{ trans('cruds.leaveApproval.fields.leave_start') }}
                         </th>
                         <td>
                             {{ $leaveApplication->leave_start }}
@@ -41,7 +41,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.leaveApplication.fields.leave_ends') }}
+                            {{ trans('cruds.leaveApproval.fields.leave_ends') }}
                         </th>
                         <td>
                             {{ $leaveApplication->leave_ends }}
@@ -49,18 +49,42 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.leaveApplication.fields.notes') }}
+                            {{ trans('cruds.leaveApproval.fields.user_notes') }}
                         </th>
                         <td>
-                            {{ $leaveApplication->notes }}
+                            {{ $leaveApplication->user_notes }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.leaveApplication.fields.approved') }}
+                            {{ trans('cruds.leaveApproval.fields.approved') }}
                         </th>
                         <td>
-                            <input type="checkbox" disabled="disabled" {{ $leaveApplication->approved ? 'checked' : '' }}>
+                            {{ $leaveApplication->approved ? 'Yes':'No' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.leaveApproval.fields.admin_notes') }}
+                        </th>
+                        <td>
+                            {{ $leaveApplication->admin_notes }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.leaveApproval.fields.editable') }}
+                        </th>
+                        <td>
+                            {{ $leaveApplication->editable ? 'Yes':'No' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.leaveApproval.fields.deleteable') }}
+                        </th>
+                        <td>
+                            {{ $leaveApplication->deleteable ? 'Yes':'No' }}
                         </td>
                     </tr>
                 </tbody>

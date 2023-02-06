@@ -55,7 +55,7 @@
                                         {{ trans('cruds.leaveApplication.fields.notes') }}
                                     </th>
                                     <td>
-                                        {{ $leaveApplication->notes }}
+                                        {{ $leaveApplication->user_notes }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -63,7 +63,16 @@
                                         {{ trans('cruds.leaveApplication.fields.approved') }}
                                     </th>
                                     <td>
-                                        <input type="checkbox" disabled="disabled" {{ $leaveApplication->approved ? 'checked' : '' }}>
+                                        {{-- <input type="checkbox" disabled="disabled" {{ $leaveApplication->approved ? 'checked' : '' }}> --}}
+                                        {{ $leaveApplication->approved ? 'Yes':'No' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        {{ trans('cruds.leaveApplication.fields.admin_notes') }}
+                                    </th>
+                                    <td>
+                                        {{ $leaveApplication->admin_notes }}
                                     </td>
                                 </tr>
                             </tbody>

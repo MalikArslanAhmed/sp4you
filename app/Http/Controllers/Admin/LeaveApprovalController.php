@@ -4,45 +4,45 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyLeaveApprovalRequest;
-use App\Http\Requests\StoreLeaveApprovalRequest;
 use App\Http\Requests\UpdateLeaveApprovalRequest;
 use Gate;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\LeaveApplication;
+use App\Models\User;
+use Illuminate\Http\Request;
 
 class LeaveApprovalController extends Controller
 {
     public function index()
     {
         abort_if(Gate::denies('leave_approval_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $leaveApplications = LeaveApplication::with(['staff_member'])->get();
 
-        return view('admin.leaveApprovals.index');
+        return view('admin.leaveApprovals.index', compact('leaveApplications'));
     }
 
-    public function create()
+    public function edit(LeaveApplication $leaveApplication)
     {
-        abort_if(Gate::denies('leave_approval_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('leave_approval_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('admin.leaveApprovals.create');
+        $staff_members = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        $leaveApplication->load('staff_member');
+        dd($leaveApplication);
+        return view('admin.leaveApprovals.edit', compact('leaveApplication', 'staff_members'));
     }
 
-    public function store(StoreLeaveApprovalRequest $request)
+    public function update(UpdateLeaveApprovalRequest $request, LeaveApplication $leaveApplication)
     {
-        $leaveApproval = LeaveApproval::create($request->all());
+        $leaveApplication->update($request->all());
 
         return redirect()->route('admin.leave-approvals.index');
     }
 
-    public function edit(LeaveApproval $leaveApproval)
+    public function approved(UpdateLeaveApprovalRequest $request, $id)
     {
-        abort_if(Gate::denies('leave_approval_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        return view('admin.leaveApprovals.edit', compact('leaveApproval'));
-    }
-
-    public function update(UpdateLeaveApprovalRequest $request, LeaveApproval $leaveApproval)
-    {
-        $leaveApproval->update($request->all());
+        $leaveApplication = LeaveApplication::findOrFail($id);
+        $leaveApplication->update($request->all());
 
         return redirect()->route('admin.leave-approvals.index');
     }

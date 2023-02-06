@@ -48,16 +48,16 @@
                             <span class="help-block">{{ trans('cruds.leaveApplication.fields.leave_ends_helper') }}</span>
                         </div>
                         <div class="form-group">
-                            <label for="notes">{{ trans('cruds.leaveApplication.fields.notes') }}</label>
-                            <textarea class="form-control" name="notes" id="notes">{{ old('notes', $leaveApplication->notes) }}</textarea>
-                            @if($errors->has('notes'))
+                            <label for="user_notes">{{ trans('cruds.leaveApplication.fields.notes') }}</label>
+                            <textarea class="form-control" name="user_notes" id="user_notes">{{ old('user_notes', $leaveApplication->user_notes) }}</textarea>
+                            @if($errors->has('user_notes'))
                                 <div class="invalid-feedback">
-                                    {{ $errors->first('notes') }}
+                                    {{ $errors->first('user_notes') }}
                                 </div>
                             @endif
                             <span class="help-block">{{ trans('cruds.leaveApplication.fields.notes_helper') }}</span>
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <div>
                                 <input type="hidden" name="approved" value="0">
                                 <input type="checkbox" name="approved" id="approved" value="1" {{ $leaveApplication->approved || old('approved', 0) === 1 ? 'checked' : '' }}>
@@ -69,7 +69,8 @@
                                 </div>
                             @endif
                             <span class="help-block">{{ trans('cruds.leaveApplication.fields.approved_helper') }}</span>
-                        </div>
+                        </div> --}}
+                        <input type="hidden" name="approved" id="approved" name="approved" value="{{ old('notes', $leaveApplication->approved) }}">
                         <div class="form-group">
                             <button class="btn btn-danger" type="submit">
                                 {{ trans('global.save') }}
