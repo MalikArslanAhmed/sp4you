@@ -36,7 +36,8 @@
                             {{ trans('cruds.staffAvailability.fields.monday') }}
                         </th>
                         <td>
-                            {{ $staffAvailability->monday }}
+                            <p><b>From:</b> {{ $staffAvailability->monday_from ?? '' }}</p>
+                            <p><b>to:</b> {{ $staffAvailability->monday_to ?? '' }}</p>
                         </td>
                     </tr>
                     <tr>
@@ -44,7 +45,8 @@
                             {{ trans('cruds.staffAvailability.fields.tuesday') }}
                         </th>
                         <td>
-                            {{ $staffAvailability->tuesday }}
+                            <p><b>From:</b> {{ $staffAvailability->tuesday_from ?? '' }}</p>
+                            <p><b>to:</b> {{ $staffAvailability->tuesday_to ?? '' }}</p>
                         </td>
                     </tr>
                     <tr>
@@ -52,7 +54,8 @@
                             {{ trans('cruds.staffAvailability.fields.wednesday') }}
                         </th>
                         <td>
-                            {{ $staffAvailability->wednesday }}
+                            <p><b>From:</b> {{ $staffAvailability->wednesday_from ?? '' }}</p>
+                            <p><b>to:</b> {{ $staffAvailability->wednesday_to ?? '' }}</p>
                         </td>
                     </tr>
                     <tr>
@@ -60,7 +63,8 @@
                             {{ trans('cruds.staffAvailability.fields.thursday') }}
                         </th>
                         <td>
-                            {{ $staffAvailability->thursday }}
+                            <p><b>From:</b> {{ $staffAvailability->thursday_from ?? '' }}</p>
+                            <p><b>to:</b> {{ $staffAvailability->thursday_to ?? '' }}</p>
                         </td>
                     </tr>
                     <tr>
@@ -68,7 +72,8 @@
                             {{ trans('cruds.staffAvailability.fields.friday') }}
                         </th>
                         <td>
-                            {{ $staffAvailability->friday }}
+                            <p><b>From:</b> {{ $staffAvailability->friday_from ?? '' }}</p>
+                            <p><b>to:</b> {{ $staffAvailability->friday_to ?? '' }}</p>
                         </td>
                     </tr>
                     <tr>
@@ -76,7 +81,8 @@
                             {{ trans('cruds.staffAvailability.fields.saturday') }}
                         </th>
                         <td>
-                            {{ $staffAvailability->saturday }}
+                            <p><b>From:</b> {{ $staffAvailability->saturday_from ?? '' }}</p>
+                            <p><b>to:</b> {{ $staffAvailability->saturday_to ?? '' }}</p>
                         </td>
                     </tr>
                     <tr>
@@ -84,7 +90,8 @@
                             {{ trans('cruds.staffAvailability.fields.sunday') }}
                         </th>
                         <td>
-                            {{ $staffAvailability->sunday }}
+                            <p><b>From:</b> {{ $staffAvailability->sunday_from ?? '' }}</p>
+                            <p><b>to:</b> {{ $staffAvailability->sunday_to ?? '' }}</p>
                         </td>
                     </tr>
                 </tbody>
