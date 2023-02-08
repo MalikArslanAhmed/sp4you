@@ -84,7 +84,7 @@ class AppointmentController extends Controller
 
     public function update(UpdateAppointmentRequest $request, Appointment $appointment)
     {
-       $this->availibilityCheck($request->all());
+        $this->availibilityCheck($request->all());
         $appointment->update($request->all());
         $appointment->clients()->sync($request->input('clients', []));
         $appointment->assigned_staffs()->sync($request->input('assigned_staffs', []));
@@ -156,7 +156,8 @@ class AppointmentController extends Controller
         return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
     }
 
-    public function availibilityCheck($data){
+    public function availibilityCheck($data)
+    {
         $assigned_staffs = $data['assigned_staffs'];
         if (!Carbon::createFromFormat('d/m/Y', explode(' ', $data['start_time'])[0])->eq(Carbon::createFromFormat('d/m/Y', explode(' ', $data['end_time'])[0]))) {
             $error = \Illuminate\Validation\ValidationException::withMessages([
@@ -172,8 +173,8 @@ class AppointmentController extends Controller
             ]);
             throw $error;
         }
-        if(isset($data['check_in']) && isset($data['check_out'])){
-            if (Carbon::createFromFormat('d/m/Y H:i:s',$data['check_in'])->lt(Carbon::createFromFormat('d/m/Y H:i:s',$data['start_time']))) {
+        if (isset($data['check_in']) && isset($data['check_out'])) {
+            if (Carbon::createFromFormat('d/m/Y H:i:s', $data['check_in'])->lt(Carbon::createFromFormat('d/m/Y H:i:s', $data['start_time']))) {
                 $error = \Illuminate\Validation\ValidationException::withMessages([
                     'check_in' => ['Check-in cant be less then Start Time'],
                 ]);
@@ -190,7 +191,7 @@ class AppointmentController extends Controller
             }
         }
         foreach ($assigned_staffs as $staff) {
-
+            $user = User::where('id', $staff)->first();
             //Check If staff is on leave
             $user_leaves = LeaveApplication::where([
                 ['staff_member_id', $staff],
@@ -199,8 +200,8 @@ class AppointmentController extends Controller
                 ->get();
             $staff_availibility = StaffAvailability::where([
                 ['staff_member_id', $staff]
-            ])->get();
-
+            ])
+                ->get();
             foreach ($user_leaves as $leave) {
                 $start_leave_date = Carbon::createFromFormat('d/m/Y', $leave['leave_start']);
                 $end_leave_date = Carbon::createFromFormat('d/m/Y', $leave['leave_start']);
@@ -208,13 +209,13 @@ class AppointmentController extends Controller
                 $end_appointment_date = Carbon::createFromFormat('d/m/Y',  explode(' ', $data['end_time'])[0]);
                 if ($start_appointment_date->gte($start_leave_date)  && $start_appointment_date->lte($end_leave_date)) {
                     $error = \Illuminate\Validation\ValidationException::withMessages([
-                        'start_time' => ['Staff is not available on selected appointed Start Date'],
+                        'start_time' => ['Staff '.$user['name'].' is not available on selected appointed Start Date'],
                     ]);
                     throw $error;
                 }
                 if ($end_appointment_date->gte($start_leave_date) && $end_appointment_date->lte($end_leave_date)) {
                     $error = \Illuminate\Validation\ValidationException::withMessages([
-                        'end_time' => ['Staff is not available on selected appointed End Date'],
+                        'end_time' => ['Staff "'.$user['name'].'" is not available on selected appointed End Date'],
                     ]);
                     throw $error;
                 }
@@ -236,8 +237,8 @@ class AppointmentController extends Controller
 
             if (!$is_available) {
                 $error = \Illuminate\Validation\ValidationException::withMessages([
-                    'start_time' => ['Start or End Time is not available for the staff'],
-                    'end_time' => ['Start or End Time is not available for the staff'],
+                    'start_time' => ['Start or End Time is not available for the staff "'.$user['name']. '"'],
+                    'end_time' => ['Start or End Time is not available for the staff "'.$user['name']. '"'],
                 ]);
                 throw $error;
             }
