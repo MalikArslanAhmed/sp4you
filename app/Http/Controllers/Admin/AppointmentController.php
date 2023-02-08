@@ -227,6 +227,7 @@ class AppointmentController extends Controller
             $is_available = false;
             foreach ($staff_availibility as $availibility) {
                 if (
+                    (isset($availibility[$day . '_from']) && $availibility[$day . '_to']) &&
                     Carbon::createFromFormat('H:i:s', explode(' ', $data['start_time'])[1])->gte(Carbon::createFromFormat('H:i:s', $availibility[$day . '_from']))
                     &&
                     Carbon::createFromFormat('H:i:s', explode(' ', $data['end_time'])[1])->lte(Carbon::createFromFormat('H:i:s', $availibility[$day . '_to']))
