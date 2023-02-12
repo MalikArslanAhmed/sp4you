@@ -190,6 +190,10 @@ class AppointmentController extends Controller
                 throw $error;
             }
         }
+        $start_date_errors = [];
+        $start_time_errors = [];
+        $end_date_errors = [];
+        $end_time_errors = [];
         foreach ($assigned_staffs as $staff) {
             $user = User::where('id', $staff)->first();
             //Check If staff is on leave
@@ -208,41 +212,69 @@ class AppointmentController extends Controller
                 $start_appointment_date = Carbon::createFromFormat('d/m/Y', explode(' ', $data['start_time'])[0]);
                 $end_appointment_date = Carbon::createFromFormat('d/m/Y',  explode(' ', $data['end_time'])[0]);
                 if ($start_appointment_date->gte($start_leave_date)  && $start_appointment_date->lte($end_leave_date)) {
-                    $error = \Illuminate\Validation\ValidationException::withMessages([
-                        'start_time' => ['Staff '.$user['name'].' is not available on selected appointed Start Date'],
-                    ]);
-                    throw $error;
+                    array_push($start_date_errors, "\"" . $user['name'] . "\"");
                 }
                 if ($end_appointment_date->gte($start_leave_date) && $end_appointment_date->lte($end_leave_date)) {
-                    $error = \Illuminate\Validation\ValidationException::withMessages([
-                        'end_time' => ['Staff "'.$user['name'].'" is not available on selected appointed End Date'],
-                    ]);
-                    throw $error;
+                    array_push($end_date_errors, "\"" . $user['name'] . "\"");
                 }
             }
             //leaves check ends
 
             //Check if staff is available on mentioned time
             $day =  strtolower(Carbon::createFromFormat('d/m/Y', explode(' ', $data['start_time'])[0])->format('l'));
-            $is_available = false;
+            $is_available_start_time = false;
+            $is_available_end_time = false;
             foreach ($staff_availibility as $availibility) {
+                //Check start time
+                if (
+                    (isset($availibility[$day . '_from']) && $availibility[$day . '_to']) &&
+                    Carbon::createFromFormat('H:i:s', explode(' ', $data['start_time'])[1])->gte(Carbon::createFromFormat('H:i:s', $availibility[$day . '_from']))
+                    &&
+                    Carbon::createFromFormat('H:i:s', explode(' ', $data['start_time'])[1])->lte(Carbon::createFromFormat('H:i:s', $availibility[$day . '_to']))
+                ) {
+                    $is_available_start_time = true;
+                }
+                //Check end time
                 if (
                     (isset($availibility[$day . '_from']) && $availibility[$day . '_to']) &&
                     Carbon::createFromFormat('H:i:s', explode(' ', $data['start_time'])[1])->gte(Carbon::createFromFormat('H:i:s', $availibility[$day . '_from']))
                     &&
                     Carbon::createFromFormat('H:i:s', explode(' ', $data['end_time'])[1])->lte(Carbon::createFromFormat('H:i:s', $availibility[$day . '_to']))
                 ) {
-                    $is_available = true;
+                    $is_available_end_time = true;
                 }
             }
 
-            if (!$is_available) {
-                $error = \Illuminate\Validation\ValidationException::withMessages([
-                    'start_time' => ['Start or End Time is not available for the staff "'.$user['name']. '"'],
-                    'end_time' => ['Start or End Time is not available for the staff "'.$user['name']. '"'],
-                ]);
-                throw $error;
+            if (!$is_available_start_time) {
+                array_push($start_time_errors, "\"" . $user['name'] . "\"");
             }
+            if (!$is_available_end_time) {
+                array_push($end_time_errors, "\"" . $user['name'] . "\"");
+            }
+        }
+        if (count($start_date_errors)) {
+            $error = \Illuminate\Validation\ValidationException::withMessages([
+                'start_time' => ['Staff ' . join(', ', $start_date_errors) . ' is not available on selected appointed Start Date'],
+            ]);
+            throw $error;
+        }
+        if (count($end_date_errors)) {
+            $error = \Illuminate\Validation\ValidationException::withMessages([
+                'end_time' => ['Staff ' . join(', ', $end_date_errors) . ' is not available on selected appointed End Date']
+            ]);
+            throw $error;
+        }
+        if (count($start_time_errors)) {
+            $error = \Illuminate\Validation\ValidationException::withMessages([
+                'start_time' => ['Staff ' . join(', ', $start_time_errors) . ' is not available on selected Start Time']
+            ]);
+            throw $error;
+        }
+        if (count($end_time_errors)) {
+            $error = \Illuminate\Validation\ValidationException::withMessages([
+                'end_time' => ['Staff ' . join(', ', $end_time_errors) . ' is not available on selected End Time']
+            ]);
+            throw $error;
         }
     }
 }
