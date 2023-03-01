@@ -208,7 +208,7 @@ class AppointmentController extends Controller
                 ->get();
             foreach ($user_leaves as $leave) {
                 $start_leave_date = Carbon::createFromFormat('d/m/Y', $leave['leave_start']);
-                $end_leave_date = Carbon::createFromFormat('d/m/Y', $leave['leave_start']);
+                $end_leave_date = Carbon::createFromFormat('d/m/Y', $leave['leave_ends']);
                 $start_appointment_date = Carbon::createFromFormat('d/m/Y', explode(' ', $data['start_time'])[0]);
                 $end_appointment_date = Carbon::createFromFormat('d/m/Y',  explode(' ', $data['end_time'])[0]);
                 if ($start_appointment_date->gte($start_leave_date)  && $start_appointment_date->lte($end_leave_date)) {
