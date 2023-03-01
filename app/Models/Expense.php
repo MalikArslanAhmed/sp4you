@@ -39,6 +39,7 @@ class Expense extends Model implements HasMedia
         'appointment_id',
         'ammount',
         'invoice_number_id',
+        'group_expense',
         'created_at',
         'updated_at',
         'deleted_at',

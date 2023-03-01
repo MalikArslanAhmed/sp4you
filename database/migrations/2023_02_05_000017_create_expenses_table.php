@@ -13,6 +13,7 @@ class CreateExpensesTable extends Migration
             $table->date('date');
             $table->string('decscription')->nullable();
             $table->decimal('ammount', 15, 2)->nullable();
+            $table->boolean('group_expense')->default(0)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

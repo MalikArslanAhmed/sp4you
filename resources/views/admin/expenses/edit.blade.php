@@ -56,6 +56,19 @@
                 <span class="help-block">{{ trans('cruds.expense.fields.client_helper') }}</span>
             </div>
             <div class="form-group">
+                <div class="form-check {{ $errors->has('group_expense') ? 'is-invalid' : '' }}">
+                    <input type="hidden" name="group_expense" value="0">
+                    <input class="form-check-input" type="checkbox" name="group_expense" id="group_expense" value="1" {{ $expense->group_expense || old('group_expense', 0) === 1 ? 'checked' : '' }}>
+                    <label class="form-check-label" for="group_expense">{{ trans('cruds.expense.fields.group_expense') }}</label>
+                </div>
+                @if($errors->has('group_expense'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('group_expense') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.leaveApplication.fields.approved_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label for="appointment_id">{{ trans('cruds.expense.fields.appointment') }}</label>
                 <select class="form-control select2 {{ $errors->has('appointment') ? 'is-invalid' : '' }}" name="appointment_id" id="appointment_id">
                     @foreach($appointments as $id => $entry)

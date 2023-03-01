@@ -44,6 +44,9 @@
                             {{ trans('cruds.expense.fields.ammount') }}
                         </th>
                         <th>
+                            {{ trans('cruds.expense.fields.group_expense') }}
+                        </th>
+                        <th>
                             {{ trans('cruds.expense.fields.invoice_number') }}
                         </th>
                         <th>
@@ -81,6 +84,9 @@
                             </td>
                             <td>
                                 {{ $expense->ammount ?? '' }}
+                            </td>
+                            <td>
+                                {{ $expense->group_expense ? 'Yes':'No' }}
                             </td>
                             <td>
                                 {{ $expense->invoice_number->invoice_number ?? '' }}
@@ -164,8 +170,9 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>
 @endsection
+

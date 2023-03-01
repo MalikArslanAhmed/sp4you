@@ -45,6 +45,7 @@ class ExpensesController extends Controller
     public function store(StoreExpenseRequest $request)
     {
         $expense = Expense::create($request->all());
+        // dd('sdf');
 
         if ($request->input('receipt_photo', false)) {
             $expense->addMedia(storage_path('tmp/uploads/' . basename($request->input('receipt_photo'))))->toMediaCollection('receipt_photo');

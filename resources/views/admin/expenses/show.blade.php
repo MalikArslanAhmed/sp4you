@@ -45,9 +45,10 @@
                         </th>
                         <td>
                             @if($expense->receipt_photo)
-                                <a href="{{ $expense->receipt_photo->getUrl() }}" target="_blank" style="display: inline-block">
-                                    <img src="{{ $expense->receipt_photo->getUrl('thumb') }}">
-                                </a>
+                            <a href="{{ $expense->receipt_photo->getUrl() }}" target="_blank"
+                                style="display: inline-block">
+                                <img src="{{ $expense->receipt_photo->getUrl('thumb') }}">
+                            </a>
                             @endif
                         </td>
                     </tr>
@@ -73,6 +74,14 @@
                         </th>
                         <td>
                             {{ $expense->ammount }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.expense.fields.group_expense') }}
+                        </th>
+                        <td>
+                            {{ $expense->group_expense?'Yes':'No' }}
                         </td>
                     </tr>
                     <tr>

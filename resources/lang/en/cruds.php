@@ -406,6 +406,8 @@ return [
             'ammount_helper'        => ' ',
             'invoice_number'        => 'Invoice Number',
             'invoice_number_helper' => ' ',
+            'group_expense' => 'Group Expense',
+            'agroup_expense_helper' => 'Group Expense Required'
         ],
     ],
     'billingRun' => [
