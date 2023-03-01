@@ -35,7 +35,8 @@ class SystemCalendarController extends Controller
         $events = [];
 
         foreach ($this->sources as $source) {
-            if ($source['model'] == "App\Models\LeaveApplication") {
+
+            if ($source['model'] == "\App\Models\LeaveApplication") {
                 foreach ($source['model']::all() as $model) {
                     $crudFieldValue = $model->getAttributes()[$source['date_field']];
                     $leaveEnd = $model->getAttributes()[$source['leave_ends']];
@@ -44,12 +45,13 @@ class SystemCalendarController extends Controller
                         continue;
                     }
 
+
                     $events[] = [
                         'title' => $staff->name . ' ' . 'Leave',
                         'start' => $crudFieldValue,
                         'end'   => $leaveEnd,
                         'url'   => route($source['route'], $model),
-                        'backgroundColor' => $staff->profile_colour,
+                        'backgroundColor' => $staff->profile_color,
                     ];
                 }
             }
@@ -62,7 +64,7 @@ class SystemCalendarController extends Controller
                     if (!$crudFieldValue) {
                         continue;
                     }
-
+                    print_r($model);
                     $events[] = [
                         'title' => sprintf(
                             '%s %s %s',
@@ -71,9 +73,10 @@ class SystemCalendarController extends Controller
                             $clients[0]->last_name,
                             trim($source['suffix']),
                         ),
+                        
                         'start' => $crudFieldValue,
                         'end' => $endTime,
-
+                        'backgroundColor' => $assinged_staff->profile_color,
                         'url'   => route($source['route'], $model),
                     ];
                 }
@@ -83,3 +86,4 @@ class SystemCalendarController extends Controller
         return view('admin.calendar.calendar', compact('events'));
     }
 }
+
