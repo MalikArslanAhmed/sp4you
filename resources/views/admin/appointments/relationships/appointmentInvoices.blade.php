@@ -25,7 +25,7 @@
                             {{ trans('cruds.invoice.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.invoice.fields.invoice_number') }}
+                            {{ trans('cruds.invoice.fields.bill') }}
                         </th>
                         <th>
                             {{ trans('cruds.invoice.fields.clients') }}
@@ -51,7 +51,7 @@
                                 {{ $invoice->id ?? '' }}
                             </td>
                             <td>
-                                {{ $invoice->invoice_number ?? '' }}
+                                {{ $invoice->bill ?? '' }}
                             </td>
                             <td>
                                 @foreach($invoice->clients as $key => $item)
@@ -142,7 +142,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

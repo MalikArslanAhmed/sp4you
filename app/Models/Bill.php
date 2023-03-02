@@ -28,10 +28,11 @@ class Bill extends Model
     protected $fillable = [
         'date',
         'client_id',
-        'appointment_id',
+        'expense_id',
         'user_id',
-        'ammount',
+        'amount',
         'status',
+        'description',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -59,9 +60,9 @@ class Bill extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function appointment()
+    public function expense()
     {
-        return $this->belongsTo(Appointment::class, 'appointment_id');
+        return $this->belongsTo(Expense::class, 'expense_id');
     }
 
     protected function serializeDate(DateTimeInterface $date)

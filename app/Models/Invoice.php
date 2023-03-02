@@ -15,7 +15,7 @@ class Invoice extends Model
     public $table = 'invoices';
 
     public static $searchable = [
-        'invoice_number',
+        'bill',
     ];
 
     protected $dates = [
@@ -25,7 +25,7 @@ class Invoice extends Model
     ];
 
     protected $fillable = [
-        'invoice_number',
+        'bill',
         'xero_invoice',
         'created_at',
         'updated_at',

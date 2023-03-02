@@ -38,7 +38,7 @@ class Expense extends Model implements HasMedia
         'client_id',
         'appointment_id',
         'ammount',
-        'invoice_number_id',
+        'bill_id',
         'group_expense',
         'created_at',
         'updated_at',
@@ -83,9 +83,9 @@ class Expense extends Model implements HasMedia
         return $this->belongsTo(Appointment::class, 'appointment_id');
     }
 
-    public function invoice_number()
+    public function bill()
     {
-        return $this->belongsTo(Invoice::class, 'invoice_number_id');
+        return $this->belongsTo(Bill::class, 'bill_id');
     }
 
     protected function serializeDate(DateTimeInterface $date)

@@ -91,18 +91,18 @@
                 <span class="help-block">{{ trans('cruds.expense.fields.ammount_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="invoice_number_id">{{ trans('cruds.expense.fields.invoice_number') }}</label>
-                <select class="form-control select2 {{ $errors->has('invoice_number') ? 'is-invalid' : '' }}" name="invoice_number_id" id="invoice_number_id">
-                    @foreach($invoice_numbers as $id => $entry)
-                        <option value="{{ $id }}" {{ old('invoice_number_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                <label for="bill_id">{{ trans('cruds.expense.fields.bill') }}</label>
+                <select class="form-control select2 {{ $errors->has('bill') ? 'is-invalid' : '' }}" name="bill_id" id="bill_id">
+                    @foreach($bills as $id => $entry)
+                        <option value="{{ $id }}" {{ old('bill_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach
                 </select>
-                @if($errors->has('invoice_number'))
+                @if($errors->has('bill'))
                     <div class="invalid-feedback">
-                        {{ $errors->first('invoice_number') }}
+                        {{ $errors->first('bill') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.expense.fields.invoice_number_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.expense.fields.bill_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

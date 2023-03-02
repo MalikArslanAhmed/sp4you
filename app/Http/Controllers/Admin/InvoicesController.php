@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyInvoiceRequest;
 use App\Http\Requests\StoreInvoiceRequest;
-use App\Http\Requests\UpdateInvoiceRequest;
+use App\Http\Requests\GenerateInvoiceRequest;
 use App\Models\Appointment;
 use App\Models\CrmCustomer;
-use App\Models\Invoice;
+use App\Models\Bill;
+use App\Models\Expense;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,9 +20,10 @@ class InvoicesController extends Controller
     {
         abort_if(Gate::denies('invoice_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $invoices = Invoice::with(['clients', 'appointments'])->get();
+        $bills = Bill::where('status', '!=', 'in-progress')
+            ->with(['client', 'user', 'expense'])->get();
 
-        return view('admin.invoices.index', compact('invoices'));
+        return view('admin.invoices.index', compact('bills'));
     }
 
     public function create()
@@ -66,13 +68,12 @@ class InvoicesController extends Controller
         return redirect()->route('admin.invoices.index');
     }
 
-    public function show(Invoice $invoice)
+    public function show($id)
     {
-        abort_if(Gate::denies('invoice_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('billing_run_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $bill = Bill::where('id', $id)->with(['client', 'user', 'expense'])->first();
 
-        $invoice->load('clients', 'appointments');
-
-        return view('admin.invoices.show', compact('invoice'));
+        return view('admin.invoices.show', compact('bill'));
     }
 
     public function destroy(Invoice $invoice)
@@ -89,5 +90,16 @@ class InvoicesController extends Controller
         Invoice::whereIn('id', request('ids'))->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    public function generateInvoice(GenerateInvoiceRequest $request, $id)
+    {
+        $bill = Bill::findOrFail($id);
+        $bill->update($request->all());
+
+        $expense = Expense::findOrFail($request->all()['expense_id']);
+        $expense->update(['bill_id' => $bill->id]);
+
+        return redirect()->route('admin.invoices.index');
     }
 }

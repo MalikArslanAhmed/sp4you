@@ -43,7 +43,7 @@
                             {{ trans('cruds.expense.fields.ammount') }}
                         </th>
                         <th>
-                            {{ trans('cruds.expense.fields.invoice_number') }}
+                            {{ trans('cruds.expense.fields.bill') }}
                         </th>
                         <th>
                             &nbsp;
@@ -82,7 +82,7 @@
                                 {{ $expense->ammount ?? '' }}
                             </td>
                             <td>
-                                {{ $expense->invoice_number->invoice_number ?? '' }}
+                                {{ $expense->bill->bill ?? '' }}
                             </td>
                             <td>
                                 @can('expense_show')
@@ -160,7 +160,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

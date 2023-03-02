@@ -79,6 +79,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Billing Run
     Route::delete('billing-runs/destroy', 'BillingRunController@massDestroy')->name('billing-runs.massDestroy');
+    Route::put('billing-runs/generat-invoice/{id}', 'BillingRunController@generateInvoice')->name('billing-runs.generateInvoice');
     Route::resource('billing-runs', 'BillingRunController');
 
     // Leave Approval
@@ -90,6 +91,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::put('leave-approvals/update/{id}', 'LeaveApprovalController@update')->name('leave-approvals.update');
 
     // Invoices
+    Route::put('invoices/generate-invoice/{id}', 'InvoicesController@generateInvoice')->name('invoices.generateInvoice');
     Route::delete('invoices/destroy', 'InvoicesController@massDestroy')->name('invoices.massDestroy');
     Route::resource('invoices', 'InvoicesController');
 

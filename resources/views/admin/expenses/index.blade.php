@@ -47,7 +47,7 @@
                             {{ trans('cruds.expense.fields.group_expense') }}
                         </th>
                         <th>
-                            {{ trans('cruds.expense.fields.invoice_number') }}
+                            {{ trans('cruds.expense.fields.bill') }}
                         </th>
                         <th>
                             &nbsp;
@@ -89,7 +89,7 @@
                                 {{ $expense->group_expense ? 'Yes':'No' }}
                             </td>
                             <td>
-                                {{ $expense->invoice_number->invoice_number ?? '' }}
+                                {{ $expense->bill->id ?? '' }}
                             </td>
                             <td>
                                 @can('expense_show')

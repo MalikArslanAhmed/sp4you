@@ -1,14 +1,5 @@
 @extends('layouts.admin')
 @section('content')
-@can('invoice_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.invoices.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.invoice.title_singular') }}
-            </a>
-        </div>
-    </div>
-@endcan
 <div class="card">
     <div class="card-header">
         {{ trans('cruds.invoice.title_singular') }} {{ trans('global.list') }}
@@ -16,26 +7,36 @@
 
     <div class="card-body">
         <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-Invoice">
+            <table class=" table table-bordered table-striped table-hover datatable datatable-Expense">
                 <thead>
                     <tr>
                         <th width="10">
 
                         </th>
                         <th>
-                            {{ trans('cruds.invoice.fields.id') }}
+                            {{ trans('cruds.billingRun.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.invoice.fields.invoice_number') }}
+                            {{ trans('cruds.billingRun.fields.client') }}
                         </th>
                         <th>
-                            {{ trans('cruds.invoice.fields.clients') }}
+                            {{ trans('cruds.billingRun.fields.staff') }}
                         </th>
                         <th>
-                            {{ trans('cruds.invoice.fields.appointment') }}
+                            {{ trans('cruds.billingRun.fields.ammount') }}
+                        </th>
+
+                        <th>
+                            {{ trans('cruds.billingRun.fields.status') }}
                         </th>
                         <th>
-                            {{ trans('cruds.invoice.fields.xero_invoice') }}
+                            {{ trans('cruds.billingRun.fields.description') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.billingRun.fields.appointment_date') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.billingRun.fields.expense_date') }}
                         </th>
                         <th>
                             &nbsp;
@@ -43,54 +44,76 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($invoices as $key => $invoice)
-                        <tr data-entry-id="{{ $invoice->id }}">
-                            <td>
+                    @foreach($bills as $key => $bill)
+                    <tr data-entry-id="{{ $bill->id }}">
+                        <td>
 
-                            </td>
-                            <td>
-                                {{ $invoice->id ?? '' }}
-                            </td>
-                            <td>
-                                {{ $invoice->invoice_number ?? '' }}
-                            </td>
-                            <td>
-                                @foreach($invoice->clients as $key => $item)
-                                    <span class="badge badge-info">{{ $item->first_name }}</span>
-                                @endforeach
-                            </td>
-                            <td>
-                                @foreach($invoice->appointments as $key => $item)
-                                    <span class="badge badge-info">{{ $item->start_time }}</span>
-                                @endforeach
-                            </td>
-                            <td>
-                                {{ $invoice->xero_invoice ?? '' }}
-                            </td>
-                            <td>
-                                @can('invoice_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.invoices.show', $invoice->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
-                                @endcan
+                        </td>
+                        <td>
+                            {{ $bill->id ?? '' }}
+                        </td>
+                        <td>
+                            <span class="badge badge-info">{{ $bill->client->first_name }}</span>
+                        </td>
+                        <td>
+                            <span class="badge badge-info">{{ $bill->user->name }}</span>
+                        </td>
+                        <td>
+                            {{ $bill->amount ?? '' }}
+                        </td>
+                        <td>
+                            {{ $bill->status ?? '' }}
+                        </td>
+                        <td>
+                            {{ $bill->description ?? '' }}
+                        </td>
+                        <td>
+                            {{ $bill->expense->appointment->start_time ?? '' }}
+                        </td>
+                        <td>
+                            {{ $bill->date ?? '' }}
+                        </td>
+                        <td>
+                            @can('invoice_show')
+                            <a class="btn btn-xs btn-primary" href="{{ route('admin.invoices.show', $bill->id) }}">
+                                {{ trans('global.view') }}
+                            </a>
+                            @endcan
+                            @if($bill->status == 'invoice-generated')
+                            @can('generate_invoice')
+                            <form method="POST" action="{{route("admin.invoices.generateInvoice", [$bill->
+                                id])}}" enctype="multipart/form-data">
+                                @method('PUT')
+                                @csrf
+                                <input type="hidden" name="date" id="date" value="{{ old('date', $bill->date) }}">
+                                <input type="hidden" name="client_id" id="client_id"
+                                    value="{{ old('client_id', $bill->client_id) }}">
+                                <input type="hidden" name="expense_id" id="expense_id"
+                                    value="{{ old('expense_id', $bill->expense_id) }}">
+                                <input type="hidden" name="amount" id="amount"
+                                    value="{{ old('amount', $bill->amount) }}">
+                                <input type="hidden" name="status" id="status" value="approved">
+                                <input type="hidden" name="description" id="description"
+                                    value="{{ old('description', $bill->description) }}">
+                                <input class="btn btn-xs btn-warning" type="submit"
+                                    value="{{ trans('cruds.billingRun.generate_invoice') }}">
+                            </form>
+                            @endcan
+                            @endif
 
-                                @can('invoice_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.invoices.edit', $invoice->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
-                                @endcan
+                            @can('billing_run_delete')
+                            <form action="{{ route('admin.billing-runs.destroy', $bill->id) }}" method="POST"
+                                onsubmit="return confirm('{{ trans('global.areYouSure') }}');"
+                                style="display: inline-block;">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                            </form>
+                            @endcan
 
-                                @can('invoice_delete')
-                                    <form action="{{ route('admin.invoices.destroy', $invoice->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                @endcan
+                        </td>
 
-                            </td>
-
-                        </tr>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -106,11 +129,11 @@
 <script>
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-@can('invoice_delete')
+@can('expense_delete')
   let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
-    url: "{{ route('admin.invoices.massDestroy') }}",
+    url: "{{ route('admin.billing-runs.massDestroy') }}",
     className: 'btn-danger',
     action: function (e, dt, node, config) {
       var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
@@ -141,13 +164,14 @@
     order: [[ 1, 'desc' ]],
     pageLength: 100,
   });
-  let table = $('.datatable-Invoice:not(.ajaxTable)').DataTable({ buttons: dtButtons })
+  let table = $('.datatable-Expense:not(.ajaxTable)').DataTable({ buttons: dtButtons })
   $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>
 @endsection
+

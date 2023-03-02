@@ -28,10 +28,10 @@
                                 </tr>
                                 <tr>
                                     <th>
-                                        {{ trans('cruds.invoice.fields.invoice_number') }}
+                                        {{ trans('cruds.invoice.fields.bill') }}
                                     </th>
                                     <td>
-                                        {{ $invoice->invoice_number }}
+                                        {{ $invoice->bill }}
                                     </td>
                                 </tr>
                                 <tr>

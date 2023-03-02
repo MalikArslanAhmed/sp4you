@@ -17,9 +17,10 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->decimal('amount', 15, 2)->nullable();
             $table->date('date');
-            $table->string('decscription')->nullable();
-            $table->enum('status', ['in-progress', 'approved'])->nullable();
+            $table->string('description')->nullable();
+            $table->enum('status', ['in-progress','invoice-generated', 'approved'])->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

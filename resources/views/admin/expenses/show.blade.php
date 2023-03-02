@@ -86,10 +86,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.expense.fields.invoice_number') }}
+                            {{ trans('cruds.expense.fields.bill') }}
                         </th>
                         <td>
-                            {{ $expense->invoice_number->invoice_number ?? '' }}
+                            {{ $expense->bill->bill ?? '' }}
                         </td>
                     </tr>
                 </tbody>

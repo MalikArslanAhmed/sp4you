@@ -404,8 +404,8 @@ return [
             'deleted_at_helper'     => ' ',
             'ammount'               => 'Ammount',
             'ammount_helper'        => ' ',
-            'invoice_number'        => 'Invoice Number',
-            'invoice_number_helper' => ' ',
+            'bill'        => 'Invoice Number',
+            'bill_helper' => ' ',
             'group_expense' => 'Group Expense',
             'agroup_expense_helper' => 'Group Expense Required'
         ],
@@ -413,6 +413,19 @@ return [
     'billingRun' => [
         'title'          => 'Billing Run',
         'title_singular' => 'Billing Run',
+        'generate_invoice'               => 'Generate Invoice',
+        'fields'         => [
+            'id'                    => 'ID',
+            'id_helper'             => ' ',
+            'date'                  => 'Date',
+            'ammount'               => 'Ammount',
+            'client'               => 'Client',
+            'staff'               => 'Staff',
+            'status'               => 'Status',
+            'description'               => 'Description',
+            'expense_date'               => 'Expense Date',
+            'appointment_date'               => 'Appointment Date',
+        ]
     ],
     'leaveApproval' => [
         'title'          => 'Leave Approval',
@@ -466,8 +479,8 @@ return [
             'updated_at_helper'     => ' ',
             'deleted_at'            => 'Deleted at',
             'deleted_at_helper'     => ' ',
-            'invoice_number'        => 'Invoice Number',
-            'invoice_number_helper' => ' ',
+            'bill'        => 'Invoice Number',
+            'bill_helper' => ' ',
         ],
     ],
 ];
