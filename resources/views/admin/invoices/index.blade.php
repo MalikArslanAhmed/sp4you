@@ -96,7 +96,7 @@
                                 <input type="hidden" name="description" id="description"
                                     value="{{ old('description', $bill->description) }}">
                                 <input class="btn btn-xs btn-warning" type="submit"
-                                    value="{{ trans('cruds.billingRun.generate_invoice') }}">
+                                    value="{{ trans('cruds.invoice.approve_invoice') }}">
                             </form>
                             @endcan
                             @endif

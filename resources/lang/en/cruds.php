@@ -481,6 +481,7 @@ return [
             'deleted_at_helper'     => ' ',
             'bill'        => 'Invoice Number',
             'bill_helper' => ' ',
+            'approve_invoice' => 'Approve Invoice'
         ],
     ],
 ];
