@@ -1,5 +1,7 @@
 <?php
 
+use Dcblogdev\Xero\Facades\Xero;
+
 Route::view('/', 'welcome');
 Auth::routes(['register' => false]);
 
@@ -106,6 +108,20 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('messenger/{topic}', 'MessengerController@destroyTopic')->name('messenger.destroyTopic');
     Route::post('messenger/{topic}/reply', 'MessengerController@replyToTopic')->name('messenger.reply');
     Route::get('messenger/{topic}/reply', 'MessengerController@showReply')->name('messenger.showReply');
+
+    Route::get('xero', function () {
+
+        if (!Xero::isConnected()) {
+            return redirect('xero/connect');
+        } else {
+            //display your tenant name
+            return Xero::getTenantName();
+        }
+    });
+
+    Route::get('xero/connect', function () {
+        return Xero::connect();
+    });
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password
@@ -203,4 +219,14 @@ Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['
     Route::post('frontend/profile', 'ProfileController@update')->name('profile.update');
     Route::post('frontend/profile/destroy', 'ProfileController@destroy')->name('profile.destroy');
     Route::post('frontend/profile/password', 'ProfileController@password')->name('profile.password');
+});
+
+//xero routes
+Route::group(['middleware' => ['web', 'XeroAuthenticated']], function () {
+    Route::get('/xero', function () {
+            return Xero::getTenantName();
+    });
+});
+Route::get('xero/connect', function () {
+    return Xero::connect();
 });
