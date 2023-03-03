@@ -41,10 +41,26 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.billingRun.fields.ammount') }}
+                            {{ trans('cruds.billingRun.fields.hours_used') }}
                         </th>
                         <td>
-                            {{ $invoice->amount ?? '' }}
+                            {{ $invoice->total_hours_consumed ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.billingRun.fields.hour_charges') }}
+                        </th>
+                        <td>
+                            {{ $invoice->hour_charges ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.billingRun.fields.total_amount') }}
+                        </th>
+                        <td>
+                            {{ $invoice->total_amount ?? '' }}
                         </td>
                     </tr>
                     <tr>

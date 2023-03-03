@@ -10,9 +10,14 @@ use App\Models\Appointment;
 use App\Models\CrmCustomer;
 use App\Models\Invoice;
 use App\Models\Expense;
+use Carbon\Carbon;
+use DateTime;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Dcblogdev\Xero\Facades\Xero;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class InvoicesController extends Controller
 {
@@ -94,11 +99,40 @@ class InvoicesController extends Controller
 
     public function generateInvoice(GenerateInvoiceRequest $request, $id)
     {
-        $invoice = Invoice::findOrFail($id);
-        $invoice->update($request->all());
-
+        $invoiceDetails = Invoice::where('id', $id)->with('client')->first();
+        $xero_contact = Http::withHeaders([
+            'Authorization' => 'Bearer ' . Xero::getTokenData()['access_token'],
+            'Xero-tenant-Id' => Xero::getTokenData()['tenant_id'],
+        ])
+            ->get('https://api.xero.com/api.xro/2.0/Contacts?page=1&where=EmailAddress="' . $invoiceDetails['client']['email'] . '"')->json()['Contacts'][0];
+        $invoiceUpdate = Invoice::findOrFail($id);
         $expense = Expense::findOrFail($request->all()['expense_id']);
-        $expense->update(['invoice_id' => $invoice->id]);
+        $xero_data = [
+            "Type" => "ACCREC",
+            "Contact" => [
+                "ContactID" =>   $xero_contact['ContactID']
+            ],
+            "LineItems" => [
+                [
+                    "Description" =>  $invoiceDetails['description'],
+                    "Quantity" => $invoiceDetails['total_hours_consumed'],
+                    "UnitAmount" => $invoiceDetails['hour_charges'],
+                    "AccountCode" => "200",
+                    "TaxType" => "NONE",
+                    "LineAmount" => $invoiceDetails['total_amount']
+                ],
+            ],
+            "Date" =>  (new DateTime())->format('Y-m-d'),
+            "DueDate" => Carbon::now()->addDays(9),
+            "Reference" => "INV-" . $invoiceDetails['id'],
+            "status" => "AUTHORISED",
+        ];
+        $xero_invoice = Xero::invoices()->store($xero_data);
+        $xero_contact = Xero::post('Invoices/' . $xero_invoice['InvoiceID'] . '/Email');
+        $data = $request->all();
+        $data['xero_invoice_id'] =  $xero_invoice['InvoiceID'];
+        $invoiceUpdate->update($data);
+        $expense->update(['invoice_id' => $invoiceUpdate->id]);
 
         return redirect()->route('admin.invoices.index');
     }

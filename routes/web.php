@@ -93,7 +93,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::put('leave-approvals/update/{id}', 'LeaveApprovalController@update')->name('leave-approvals.update');
 
     // Invoices
-    Route::put('invoices/generate-invoice/{id}', 'InvoicesController@generateInvoice')->name('invoices.generateInvoice');
+    Route::put('invoices/generate-invoice/{id}', 'InvoicesController@generateInvoice')->name('invoices.generateInvoice')->middleware('XeroAuthenticated');
     Route::delete('invoices/destroy', 'InvoicesController@massDestroy')->name('invoices.massDestroy');
     Route::resource('invoices', 'InvoicesController');
 
@@ -208,47 +208,6 @@ Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['
     Route::post('frontend/profile/password', 'ProfileController@password')->name('profile.password');
 });
 
-
-//xero routes
-// Route::group(['middleware' => ['web', 'XeroAuthenticated']], function () {
-//     Route::get('xero', function () {
-//         // $data = Xero::contacts()->get(1,'EmailAddress="malikzarslan44@gmail.com"');
-//         // $data = Xero::invoices()->get(1, 'Reference="234asdfasf"');
-//         $data = [
-//             "Type" => "ACCREC",
-//             "Contact" => [
-//                 "ContactID"=>"b81a5432-2fcf-454b-9d4b-54ead3a5b81b"
-//             ],
-//             "LineItems" => [
-//                 [
-//                     "Description"=>'test item 1',
-//                     "Quantity"=>2,
-//                     "UnitAmount"=>35,
-//                     "AccountCode"=>"200",
-//                     "TaxType"=>"NONE",
-//                     "LineAmount"=>70
-//                 ],
-//                 [
-//                     "Description"=>'test item 2',
-//                     "Quantity"=>5,
-//                     "UnitAmount"=>29,
-//                     "AccountCode"=>"200",
-//                     "TaxType"=>"NONE",
-//                     "LineAmount"=>145
-//                 ]
-//             ],
-//             "Date" => "2023-03-03",
-//             "DueDate" => "2023-03-10",
-//             "Reference" => "Website Xero Testing",
-//             "status" => "AUTHORISED",
-//         ];
-//         $data   = Xero::invoices()->store($data);
-//         Xero::post("invoices/7ec32e24-8e5b-4096-a15a-0c40d48c9f15/Email");
-//         dd($data);
-
-//         return Xero::invoices()->find('fee88eea-f2aa-4a71-a372-33d6d83d3c45');
-//     });
-// });
-// Route::get('xero/connect', function () {
-//     return Xero::connect();
-// });
+Route::get('xero/connect', function(){
+    return Xero::connect();
+});

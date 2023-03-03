@@ -23,9 +23,14 @@
                             {{ trans('cruds.billingRun.fields.staff') }}
                         </th>
                         <th>
-                            {{ trans('cruds.billingRun.fields.ammount') }}
+                            {{ trans('cruds.billingRun.fields.hours_used') }}
                         </th>
-
+                        <th>
+                            {{ trans('cruds.billingRun.fields.hour_charges') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.billingRun.fields.total_amount') }}
+                        </th>
                         <th>
                             {{ trans('cruds.billingRun.fields.status') }}
                         </th>
@@ -59,7 +64,13 @@
                             <span class="badge badge-info">{{ $invoice->user->name }}</span>
                         </td>
                         <td>
-                            {{ $invoice->amount ?? '' }}
+                            {{ $invoice->total_hours_consumed ?? '' }}
+                        </td>
+                        <td>
+                            {{ $invoice->hour_charges ?? '' }}
+                        </td>
+                        <td>
+                            {{ $invoice->total_amount ?? '' }}
                         </td>
                         <td>
                             {{ $invoice->status ?? '' }}

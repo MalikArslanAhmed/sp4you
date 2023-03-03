@@ -405,6 +405,7 @@ return [
             'ammount'               => 'Ammount',
             'ammount_helper'        => ' ',
             'invoice'        => 'Invoice Number',
+            'invoice_id'        => 'Invoice Id',
             'bill_helper' => ' ',
             'group_expense' => 'Group Expense',
             'agroup_expense_helper' => 'Group Expense Required'
@@ -418,7 +419,9 @@ return [
             'id'                    => 'ID',
             'id_helper'             => ' ',
             'date'                  => 'Date',
-            'ammount'               => 'Ammount',
+            'total_amount'               => 'Total Amount',
+            'hours_used'               => 'Hours Used',
+            'hour_charges'               => 'Hourly Charges',
             'client'               => 'Client',
             'staff'               => 'Staff',
             'status'               => 'Status',

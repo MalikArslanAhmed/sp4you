@@ -68,11 +68,10 @@ class ExpensesController extends Controller
 
         $appointments = Appointment::pluck('start_time', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $invoices = Invoice::pluck('invoice', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $expense->load('client', 'appointment', 'invoice');
+        $expense->load('client', 'appointment' );
 
-        return view('admin.expenses.edit', compact('appointments', 'clients', 'expense', 'invoices'));
+        return view('admin.expenses.edit', compact('appointments', 'clients', 'expense'));
     }
 
     public function update(UpdateExpenseRequest $request, Expense $expense)
@@ -136,7 +135,9 @@ class ExpensesController extends Controller
         $end_time = Carbon::parse($appointment['end_time']);
         foreach ($appointment['assigned_staffs'] as $staff) {
             $bill_data = [
-                'amount' => ($expense['ammount']) * $start_time->diffInHours($end_time),
+                'total_amount' => ($expense['ammount']) * $start_time->diffInHours($end_time),
+                'total_hours_consumed' => $start_time->diffInHours($end_time),
+                'hour_charges' => ($expense['ammount']),
                 'date' => $expense['date'],
                 'description' => $expense['decscription'],
                 'status' => 'in-progress',
