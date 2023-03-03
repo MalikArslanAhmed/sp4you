@@ -9,13 +9,13 @@ use App\Traits\Auditable;
 use Carbon\Carbon;
 use \DateTimeInterface;
 
-class Bill extends Model
+class Invoice extends Model
 {
     use SoftDeletes;
     use Auditable;
     use HasFactory;
 
-    public $table = 'bills';
+    public $table = 'invoices';
 
 
     protected $dates = [

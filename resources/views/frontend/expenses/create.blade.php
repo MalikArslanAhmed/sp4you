@@ -83,15 +83,15 @@
                             <span class="help-block">{{ trans('cruds.expense.fields.ammount_helper') }}</span>
                         </div>
                         <div class="form-group">
-                            <label for="bill_id">{{ trans('cruds.expense.fields.bill') }}</label>
-                            <select class="form-control select2" name="bill_id" id="bill_id">
-                                @foreach($bills as $id => $entry)
-                                    <option value="{{ $id }}" {{ old('bill_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                            <label for="invoice_id">{{ trans('cruds.expense.fields.bill') }}</label>
+                            <select class="form-control select2" name="invoice_id" id="invoice_id">
+                                @foreach($invoices as $id => $entry)
+                                    <option value="{{ $id }}" {{ old('invoice_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                                 @endforeach
                             </select>
-                            @if($errors->has('bill'))
+                            @if($errors->has('invoice'))
                                 <div class="invalid-feedback">
-                                    {{ $errors->first('bill') }}
+                                    {{ $errors->first('invoice') }}
                                 </div>
                             @endif
                             <span class="help-block">{{ trans('cruds.expense.fields.bill_helper') }}</span>

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyBillingRunRequest;
 use App\Http\Requests\StoreBillingRunRequest;
 use App\Http\Requests\GenerateInvoiceRequest;
-use App\Models\Bill;
+use App\Models\Invoice;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,10 +16,10 @@ class BillingRunController extends Controller
     public function index()
     {
         abort_if(Gate::denies('billing_run_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $bills = Bill::where('status','!=','approved')
+        $invoices = Invoice::where('status','!=','approved')
         ->with(['client', 'user', 'expense'])->get();
 
-        return view('admin.billingRuns.index', compact('bills'));
+        return view('admin.billingRuns.index', compact('invoices'));
     }
 
     public function create()
@@ -31,19 +31,19 @@ class BillingRunController extends Controller
 
     public function store(StoreBillingRunRequest $request)
     {
-        $billingRun = Bill::create($request->all());
+        $billingRun = Invoice::create($request->all());
 
         return redirect()->route('admin.billing-runs.index');
     }
 
-    public function edit(Bill $billingRun)
+    public function edit(Invoice $billingRun)
     {
         abort_if(Gate::denies('billing_run_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return view('admin.billingRuns.edit', compact('billingRun'));
     }
 
-    public function update(UpdateBillRequest $request, Bill $billingRun)
+    public function update(UpdateBillRequest $request, Invoice $billingRun)
     {
         $billingRun->update($request->all());
 
@@ -53,12 +53,12 @@ class BillingRunController extends Controller
     public function show($id)
     {
         abort_if(Gate::denies('billing_run_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $bill = Bill::where('id',$id)->with(['client', 'user', 'expense'])->first();
+        $invoice = Invoice::where('id',$id)->with(['client', 'user', 'expense'])->first();
 
-        return view('admin.billingRuns.show', compact('bill'));
+        return view('admin.billingRuns.show', compact('invoice'));
     }
 
-    public function destroy(Bill $billingRun)
+    public function destroy(Invoice $billingRun)
     {
         abort_if(Gate::denies('billing_run_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
@@ -69,7 +69,7 @@ class BillingRunController extends Controller
 
     public function massDestroy(MassDestroyBillingRunRequest $request)
     {
-        Bill::whereIn('id', request('ids'))->delete();
+        Invoice::whereIn('id', request('ids'))->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
@@ -77,8 +77,8 @@ class BillingRunController extends Controller
     public function generateInvoice(GenerateInvoiceRequest $request, $id)
     {
         // dd($request);
-        $bill = Bill::findOrFail($id);
-        $bill->update($request->all());
+        $invoice = Invoice::findOrFail($id);
+        $invoice->update($request->all());
 
         return redirect()->route('admin.billing-runs.index');
     }

@@ -91,20 +91,6 @@
                 <span class="help-block">{{ trans('cruds.expense.fields.ammount_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="bill_id">{{ trans('cruds.expense.fields.bill') }}</label>
-                <select class="form-control select2 {{ $errors->has('bill') ? 'is-invalid' : '' }}" name="bill_id" id="bill_id">
-                    @foreach($bills as $id => $entry)
-                        <option value="{{ $id }}" {{ old('bill_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('bill'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('bill') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.expense.fields.bill_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

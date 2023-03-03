@@ -404,7 +404,7 @@ return [
             'deleted_at_helper'     => ' ',
             'ammount'               => 'Ammount',
             'ammount_helper'        => ' ',
-            'bill'        => 'Invoice Number',
+            'invoice'        => 'Invoice Number',
             'bill_helper' => ' ',
             'group_expense' => 'Group Expense',
             'agroup_expense_helper' => 'Group Expense Required'
@@ -479,7 +479,7 @@ return [
             'updated_at_helper'     => ' ',
             'deleted_at'            => 'Deleted at',
             'deleted_at_helper'     => ' ',
-            'bill'        => 'Invoice Number',
+            'invoice'        => 'Invoice Number',
             'bill_helper' => ' ',
             'approve_invoice' => 'Approve Invoice'
         ],

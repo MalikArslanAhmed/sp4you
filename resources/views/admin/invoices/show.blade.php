@@ -20,7 +20,7 @@
                             {{ trans('cruds.billingRun.fields.id') }}
                         </th>
                         <td>
-                            {{ $bill->id }}
+                            {{ $invoice->id }}
                         </td>
                     </tr>
                     <tr>
@@ -28,7 +28,7 @@
                             {{ trans('cruds.billingRun.fields.client') }}
                         </th>
                         <td>
-                            <span class="badge badge-info">{{ $bill->client->first_name }}</span>
+                            <span class="badge badge-info">{{ $invoice->client->first_name }}</span>
                         </td>
                     </tr>
                     <tr>
@@ -36,7 +36,7 @@
                             {{ trans('cruds.billingRun.fields.staff') }}
                         </th>
                         <td>
-                            <span class="badge badge-info">{{ $bill->user->name }}</span>
+                            <span class="badge badge-info">{{ $invoice->user->name }}</span>
                         </td>
                     </tr>
                     <tr>
@@ -44,7 +44,7 @@
                             {{ trans('cruds.billingRun.fields.ammount') }}
                         </th>
                         <td>
-                            {{ $bill->amount ?? '' }}
+                            {{ $invoice->amount ?? '' }}
                         </td>
                     </tr>
                     <tr>
@@ -52,7 +52,7 @@
                             {{ trans('cruds.billingRun.fields.status') }}
                         </th>
                         <td>
-                            {{ $bill->status }}
+                            {{ $invoice->status }}
                         </td>
                     </tr>
                     <tr>
@@ -60,7 +60,7 @@
                             {{ trans('cruds.billingRun.fields.description') }}
                         </th>
                         <td>
-                            {{ $bill->description }}
+                            {{ $invoice->description }}
                         </td>
                     </tr>
                     <tr>
@@ -68,7 +68,7 @@
                             {{ trans('cruds.billingRun.fields.expense_date') }}
                         </th>
                         <td>
-                            {{ $bill->date }}
+                            {{ $invoice->date }}
                         </td>
                     </tr>
                     <tr>
@@ -76,7 +76,7 @@
                             {{ trans('cruds.billingRun.fields.appointment_date') }}
                         </th>
                         <td>
-                            "{{ $bill->expense->appointment->start_time }}" to "{{ $bill->expense->appointment->end_time }}"
+                            "{{ $invoice->expense->appointment->start_time }}" to "{{ $invoice->expense->appointment->end_time }}"
                         </td>
                     </tr>
                 </tbody>

@@ -11,7 +11,6 @@ use App\Models\Appointment;
 use App\Models\CrmCustomer;
 use App\Models\Expense;
 use App\Models\Invoice;
-use App\Models\Bill;
 use Carbon\Carbon;
 use Gate;
 use Illuminate\Http\Request;
@@ -26,7 +25,7 @@ class ExpensesController extends Controller
     {
         abort_if(Gate::denies('expense_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $expenses = Expense::with(['client', 'appointment', 'bill', 'media'])->get();
+        $expenses = Expense::with(['client', 'appointment', 'invoice', 'media'])->get();
 
         return view('admin.expenses.index', compact('expenses'));
     }
@@ -39,9 +38,7 @@ class ExpensesController extends Controller
 
         $appointments = Appointment::pluck('start_time', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $bills = Invoice::pluck('bill', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        return view('admin.expenses.create', compact('appointments', 'clients', 'bills'));
+        return view('admin.expenses.create', compact('appointments', 'clients'));
     }
 
     public function store(StoreExpenseRequest $request)
@@ -71,11 +68,11 @@ class ExpensesController extends Controller
 
         $appointments = Appointment::pluck('start_time', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $bills = Invoice::pluck('bill', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $invoices = Invoice::pluck('invoice', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $expense->load('client', 'appointment', 'bill');
+        $expense->load('client', 'appointment', 'invoice');
 
-        return view('admin.expenses.edit', compact('appointments', 'clients', 'expense', 'bills'));
+        return view('admin.expenses.edit', compact('appointments', 'clients', 'expense', 'invoices'));
     }
 
     public function update(UpdateExpenseRequest $request, Expense $expense)
@@ -100,7 +97,7 @@ class ExpensesController extends Controller
     {
         abort_if(Gate::denies('expense_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $expense->load('client', 'appointment', 'bill');
+        $expense->load('client', 'appointment', 'invoice');
 
         return view('admin.expenses.show', compact('expense'));
     }
@@ -150,7 +147,7 @@ class ExpensesController extends Controller
             if ($expense['group_expense']) {
                 $bill_data['amount'] = ($expense['ammount'] / count($appointment['clients'])) * $start_time->diffInHours($end_time);
             }
-            Bill::create($bill_data);
+            Invoice::create($bill_data);
         }
     }
 }

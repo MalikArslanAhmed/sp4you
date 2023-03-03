@@ -52,63 +52,63 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($bills as $key => $bill)
-                    <tr data-entry-id="{{ $bill->id }}">
+                    @foreach($invoices as $key => $invoice)
+                    <tr data-entry-id="{{ $invoice->id }}">
                         <td>
 
                         </td>
                         <td>
-                            {{ $bill->id ?? '' }}
+                            {{ $invoice->id ?? '' }}
                         </td>
                         <td>
-                            <span class="badge badge-info">{{ $bill->client->first_name }}</span>
+                            <span class="badge badge-info">{{ $invoice->client->first_name }}</span>
                         </td>
                         <td>
-                            <span class="badge badge-info">{{ $bill->user->name }}</span>
+                            <span class="badge badge-info">{{ $invoice->user->name }}</span>
                         </td>
                         <td>
-                            {{ $bill->amount ?? '' }}
+                            {{ $invoice->amount ?? '' }}
                         </td>
                         <td>
-                            {{ $bill->status ?? '' }}
+                            {{ $invoice->status ?? '' }}
                         </td>
                         <td>
-                            {{ $bill->description ?? '' }}
+                            {{ $invoice->description ?? '' }}
                         </td>
                         <td>
-                            {{ $bill->expense->appointment->start_time ?? '' }}
+                            {{ $invoice->expense->appointment->start_time ?? '' }}
                         </td>
                         <td>
-                            {{ $bill->date ?? '' }}
+                            {{ $invoice->date ?? '' }}
                         </td>
                         <td>
                             @can('billing_run_show')
-                            <a class="btn btn-xs btn-primary" href="{{ route('admin.billing-runs.show', $bill->id) }}">
+                            <a class="btn btn-xs btn-primary" href="{{ route('admin.billing-runs.show', $invoice->id) }}">
                                 {{ trans('global.view') }}
                             </a>
                             @endcan
-                            @if($bill->status == 'in-progress')
+                            @if($invoice->status == 'in-progress')
                             @can('generate_invoice')
-                            <form method="POST" action="{{route("admin.billing-runs.generateInvoice", [$bill->
+                            <form method="POST" action="{{route("admin.billing-runs.generateInvoice", [$invoice->
                                 id])}}" enctype="multipart/form-data">
                                 @method('PUT')
                                 @csrf
-                                <input type="hidden" name="date" id="date" value="{{ old('date', $bill->date) }}">
+                                <input type="hidden" name="date" id="date" value="{{ old('date', $invoice->date) }}">
                                 <input type="hidden" name="client_id" id="client_id"
-                                    value="{{ old('client_id', $bill->client_id) }}">
+                                    value="{{ old('client_id', $invoice->client_id) }}">
                                 <input type="hidden" name="expense_id" id="expense_id"
-                                    value="{{ old('expense_id', $bill->expense_id) }}">
+                                    value="{{ old('expense_id', $invoice->expense_id) }}">
                                 <input type="hidden" name="amount" id="amount"
-                                    value="{{ old('amount', $bill->amount) }}">
+                                    value="{{ old('amount', $invoice->amount) }}">
                                 <input type="hidden" name="status" id="status" value="invoice-generated">
                                 <input type="hidden" name="description" id="description"
-                                    value="{{ old('description', $bill->description) }}">
+                                    value="{{ old('description', $invoice->description) }}">
                                 <input class="btn btn-xs btn-warning" type="submit"
                                     value="{{ trans('cruds.billingRun.generate_invoice') }}">
                             </form>
                             @endcan
                             @can('billing_run_delete')
-                            <form action="{{ route('admin.billing-runs.destroy', $bill->id) }}" method="POST"
+                            <form action="{{ route('admin.billing-runs.destroy', $invoice->id) }}" method="POST"
                                 onsubmit="return confirm('{{ trans('global.areYouSure') }}');"
                                 style="display: inline-block;">
                                 <input type="hidden" name="_method" value="DELETE">

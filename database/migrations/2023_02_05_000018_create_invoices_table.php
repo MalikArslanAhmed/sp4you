@@ -10,8 +10,11 @@ class CreateInvoicesTable extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('bill')->nullable();
-            $table->integer('xero_invoice')->nullable();
+            $table->decimal('amount', 15, 2)->nullable();
+            $table->date('date');
+            $table->string('description')->nullable();
+            $table->string('xero_invoice_id')->nullable();
+            $table->enum('status', ['in-progress','invoice-generated', 'approved'])->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

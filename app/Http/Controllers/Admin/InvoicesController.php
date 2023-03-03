@@ -8,7 +8,7 @@ use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\GenerateInvoiceRequest;
 use App\Models\Appointment;
 use App\Models\CrmCustomer;
-use App\Models\Bill;
+use App\Models\Invoice;
 use App\Models\Expense;
 use Gate;
 use Illuminate\Http\Request;
@@ -20,10 +20,10 @@ class InvoicesController extends Controller
     {
         abort_if(Gate::denies('invoice_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $bills = Bill::where('status', '!=', 'in-progress')
+        $invoices = Invoice::where('status', '!=', 'in-progress')
             ->with(['client', 'user', 'expense'])->get();
 
-        return view('admin.invoices.index', compact('bills'));
+        return view('admin.invoices.index', compact('invoices'));
     }
 
     public function create()
@@ -71,9 +71,9 @@ class InvoicesController extends Controller
     public function show($id)
     {
         abort_if(Gate::denies('billing_run_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $bill = Bill::where('id', $id)->with(['client', 'user', 'expense'])->first();
+        $invoice = Invoice::where('id', $id)->with(['client', 'user', 'expense'])->first();
 
-        return view('admin.invoices.show', compact('bill'));
+        return view('admin.invoices.show', compact('invoice'));
     }
 
     public function destroy(Invoice $invoice)
@@ -94,11 +94,11 @@ class InvoicesController extends Controller
 
     public function generateInvoice(GenerateInvoiceRequest $request, $id)
     {
-        $bill = Bill::findOrFail($id);
-        $bill->update($request->all());
+        $invoice = Invoice::findOrFail($id);
+        $invoice->update($request->all());
 
         $expense = Expense::findOrFail($request->all()['expense_id']);
-        $expense->update(['bill_id' => $bill->id]);
+        $expense->update(['invoice_id' => $invoice->id]);
 
         return redirect()->route('admin.invoices.index');
     }

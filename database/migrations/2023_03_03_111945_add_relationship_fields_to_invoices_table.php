@@ -4,11 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddRelationshipFieldsToBillsTable extends Migration
+class AddRelationshipFieldsToInvoicesTable extends Migration
 {
     public function up()
     {
-        Schema::table('bills', function (Blueprint $table) {
+        Schema::table('invoices', function (Blueprint $table) {
+            //
             $table->unsignedBigInteger('client_id')->nullable();
             $table->foreign('client_id', 'client_fk_7872160')->references('id')->on('crm_customers');
             $table->unsignedBigInteger('user_id')->nullable();
@@ -17,4 +18,16 @@ class AddRelationshipFieldsToBillsTable extends Migration
             $table->foreign('expense_id', 'expense_fk_7872162')->references('id')->on('expenses');
         });
     }
-}
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('invoices', function (Blueprint $table) {
+            //
+        });
+    }
+};

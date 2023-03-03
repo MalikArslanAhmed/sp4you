@@ -24,7 +24,7 @@ class ExpensesController extends Controller
     {
         abort_if(Gate::denies('expense_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $expenses = Expense::with(['client', 'appointment', 'bill', 'media'])->get();
+        $expenses = Expense::with(['client', 'appointment', 'invoice', 'media'])->get();
 
         return view('frontend.expenses.index', compact('expenses'));
     }
@@ -37,9 +37,9 @@ class ExpensesController extends Controller
 
         $appointments = Appointment::pluck('start_time', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $bills = Invoice::pluck('bill', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $invoices = Invoice::pluck('invoice', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('frontend.expenses.create', compact('appointments', 'clients', 'bills'));
+        return view('frontend.expenses.create', compact('appointments', 'clients', 'invoices'));
     }
 
     public function store(StoreExpenseRequest $request)
@@ -65,11 +65,11 @@ class ExpensesController extends Controller
 
         $appointments = Appointment::pluck('start_time', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $bills = Invoice::pluck('bill', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $invoices = Invoice::pluck('invoice', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $expense->load('client', 'appointment', 'bill');
+        $expense->load('client', 'appointment', 'invoice');
 
-        return view('frontend.expenses.edit', compact('appointments', 'clients', 'expense', 'bills'));
+        return view('frontend.expenses.edit', compact('appointments', 'clients', 'expense', 'invoices'));
     }
 
     public function update(UpdateExpenseRequest $request, Expense $expense)
@@ -94,7 +94,7 @@ class ExpensesController extends Controller
     {
         abort_if(Gate::denies('expense_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $expense->load('client', 'appointment', 'bill');
+        $expense->load('client', 'appointment', 'invoice');
 
         return view('frontend.expenses.show', compact('expense'));
     }
