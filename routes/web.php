@@ -81,6 +81,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Billing Run
     Route::delete('billing-runs/destroy', 'BillingRunController@massDestroy')->name('billing-runs.massDestroy');
+    Route::post('billing-runs/multiple-invoice-approval', 'BillingRunController@multipleInvoiceApproval')->name('billing-runs.multipleInvoiceApproval');
     Route::put('billing-runs/generat-invoice/{id}', 'BillingRunController@generateInvoice')->name('billing-runs.generateInvoice');
     Route::resource('billing-runs', 'BillingRunController');
 
@@ -94,6 +95,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Invoices
     Route::put('invoices/generate-invoice/{id}', 'InvoicesController@generateInvoice')->name('invoices.generateInvoice')->middleware('XeroAuthenticated');
+    Route::post('invoices/generate-single-invoice', 'InvoicesController@generateSingleInvoice')->name('invoices.generateSingleInvoice')->middleware('XeroAuthenticated');
     Route::delete('invoices/destroy', 'InvoicesController@massDestroy')->name('invoices.massDestroy');
     Route::resource('invoices', 'InvoicesController');
 

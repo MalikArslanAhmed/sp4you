@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyInvoiceRequest;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\GenerateInvoiceRequest;
+use App\Http\Requests\MassGenerateInvoiceRequest;
 use App\Models\Appointment;
 use App\Models\CrmCustomer;
 use App\Models\Invoice;
@@ -100,13 +101,27 @@ class InvoicesController extends Controller
     public function generateInvoice(GenerateInvoiceRequest $request, $id)
     {
         $invoiceDetails = Invoice::where('id', $id)->with('client')->first();
+        // dd(  Xero::getTokenData()['access_token'],Xero::getTokenData()['tenant_id']);
+
         $xero_contact = Http::withHeaders([
             'Authorization' => 'Bearer ' . Xero::getTokenData()['access_token'],
             'Xero-tenant-Id' => Xero::getTokenData()['tenant_id'],
         ])
-            ->get('https://api.xero.com/api.xro/2.0/Contacts?page=1&where=EmailAddress="' . $invoiceDetails['client']['email'] . '"')->json()['Contacts'][0];
+            ->get('https://api.xero.com/api.xro/2.0/Contacts?page=1&where=EmailAddress="' . $invoiceDetails['client']['email'] . '"')->json();
+        if (count($xero_contact['Contacts']) == 0) {
+            $xero_data =                     [
+                "Name" => $invoiceDetails->client->first_name . ' ' . $invoiceDetails->client->last_name,
+                "FirstName" => $invoiceDetails->client->first_name,
+                "LastName" => $invoiceDetails->client->last_name,
+                "EmailAddress" => $invoiceDetails->client->email
+            ];
+            $xero_contact = Xero::contacts()->store($xero_data);
+        } else {
+            $xero_contact = $xero_contact['Contacts'][0];
+        }
+        // dd( $xero_contact);
         $invoiceUpdate = Invoice::findOrFail($id);
-        $expense = Expense::findOrFail($request->all()['expense_id']);
+        // $expense = Expense::findOrFail($request->all()['expense_id']);
         $xero_data = [
             "Type" => "ACCREC",
             "Contact" => [
@@ -114,16 +129,16 @@ class InvoicesController extends Controller
             ],
             "LineItems" => [
                 [
-                    "Description" =>  $invoiceDetails['description'],
-                    "Quantity" => $invoiceDetails['total_hours_consumed'],
-                    "UnitAmount" => $invoiceDetails['hour_charges'],
+                    "Description" =>  $invoiceDetails['description'] ? $invoiceDetails['description'] : 'Nill',
+                    "Quantity" => $invoiceDetails['total_hours_consumed'] ? $invoiceDetails['total_hours_consumed'] : 1,
+                    "UnitAmount" => $invoiceDetails['hour_charges'] ? $invoiceDetails['hour_charges'] : $invoiceDetails['total_amount'],
                     "AccountCode" => "200",
                     "TaxType" => "NONE",
                     "LineAmount" => $invoiceDetails['total_amount']
                 ],
             ],
-            "Date" =>  (new DateTime())->format('Y-m-d'),
-            "DueDate" => Carbon::now()->addDays(9),
+            "Date" => (new DateTime())->format('Y-m-d'),
+            "DueDate" => Carbon::now()->addDays(9)->format('Y-m-d'),
             "Reference" => "INV-" . $invoiceDetails['id'],
             "status" => "AUTHORISED",
         ];
@@ -132,8 +147,65 @@ class InvoicesController extends Controller
         $data = $request->all();
         $data['xero_invoice_id'] =  $xero_invoice['InvoiceID'];
         $invoiceUpdate->update($data);
-        $expense->update(['invoice_id' => $invoiceUpdate->id]);
 
         return redirect()->route('admin.invoices.index');
+    }
+
+    public function generateSingleInvoice(MassGenerateInvoiceRequest $request)
+    {
+        $invoices = Invoice::wherein('id', request('ids'))
+            ->with(['client', 'expense', 'assigned_staffs.user', 'appointment'])->get();
+        // same data
+        $invoiceDetails = $invoices[0];
+        $xero_contact = Http::withHeaders([
+            'Authorization' => 'Bearer ' . Xero::getTokenData()['access_token'],
+            'Xero-tenant-Id' => Xero::getTokenData()['tenant_id'],
+        ])
+            ->get('https://api.xero.com/api.xro/2.0/Contacts?page=1&where=EmailAddress="' . $invoiceDetails['client']['email'] . '"')->json();
+        if (count($xero_contact['Contacts']) == 0) {
+            $xero_data =                     [
+                "Name" => $invoiceDetails->client->first_name . ' ' . $invoiceDetails->client->last_name,
+                "FirstName" => $invoiceDetails->client->first_name,
+                "LastName" => $invoiceDetails->client->last_name,
+                "EmailAddress" => $invoiceDetails->client->email
+            ];
+            $xero_contact = Xero::contacts()->store($xero_data);
+        } else {
+            $xero_contact = $xero_contact['Contacts'][0];
+        }
+        $xero_data = [
+            "Type" => "ACCREC",
+            "Contact" => [
+                "ContactID" =>   $xero_contact['ContactID']
+            ],
+            "LineItems" => [],
+            "Date" => (new DateTime())->format('Y-m-d'),
+            "DueDate" => Carbon::now()->addDays(9),
+            "Reference" => "INV-" . $invoiceDetails['id'],
+            "status" => "AUTHORISED",
+        ];
+        foreach ($invoices as $invoice) {
+            array_push(
+                $xero_data['LineItems'],
+                [
+                    "Description" =>  $invoice['description'],
+                    "Quantity" => $invoice['total_hours_consumed'],
+                    "UnitAmount" => $invoice['hour_charges'],
+                    "AccountCode" => "200",
+                    "TaxType" => "NONE",
+                    "LineAmount" => $invoice['total_amount']
+                ]
+            );
+        }
+        $xero_invoice = Xero::invoices()->store($xero_data);
+        $xero_contact = Xero::post('Invoices/' . $xero_invoice['InvoiceID'] . '/Email');
+        $data = $request->all();
+        $data['xero_invoice_id'] =  $xero_invoice['InvoiceID'];
+        Invoice::wherein('id', request('ids'))
+            ->update([
+                'status' => 'approved',
+                'xero_invoice_id' => $xero_invoice['InvoiceID'],
+            ]);
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }

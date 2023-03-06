@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyBillingRunRequest;
 use App\Http\Requests\StoreBillingRunRequest;
 use App\Http\Requests\GenerateInvoiceRequest;
+use App\Http\Requests\MassGenerateInvoiceRequest;
 use App\Models\Invoice;
 use Gate;
 use Illuminate\Http\Request;
@@ -16,9 +17,8 @@ class BillingRunController extends Controller
     public function index()
     {
         abort_if(Gate::denies('billing_run_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $invoices = Invoice::where('status','!=','approved')
-        ->with(['client', 'user', 'expense','assigned_staffs.user'])->get();
-// dd($invoices);
+        $invoices = Invoice::where('status', '!=', 'approved')
+            ->with(['client', 'user', 'expense', 'assigned_staffs.user'])->get();
         return view('admin.billingRuns.index', compact('invoices'));
     }
 
@@ -53,7 +53,7 @@ class BillingRunController extends Controller
     public function show($id)
     {
         abort_if(Gate::denies('billing_run_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $invoice = Invoice::where('id',$id)->with(['client', 'user', 'expense'])->first();
+        $invoice = Invoice::where('id', $id)->with(['client', 'user', 'expense'])->first();
 
         return view('admin.billingRuns.show', compact('invoice'));
     }
@@ -81,5 +81,11 @@ class BillingRunController extends Controller
         $invoice->update($request->all());
 
         return redirect()->route('admin.billing-runs.index');
+    }
+    public function generateSingleInvoice(MassGenerateInvoiceRequest $request)
+    {
+        $invoices = Invoice::wherein('id', request('ids'))
+            ->update(['status' => 'invoice-generated']);
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }

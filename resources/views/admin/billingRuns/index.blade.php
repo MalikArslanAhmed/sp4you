@@ -1,13 +1,5 @@
 @extends('layouts.admin')
 @section('content')
-{{-- <div style="margin-bottom: 10px;" class="row">
-    <div class="col-lg-12">
-        <a class="btn btn-success" href="{{ route('admin.expenses.create') }}">
-            {{ trans('global.add') }} {{ trans('cruds.billingRun.title_singular') }}
-        </a>
-    </div>
-</div> --}}
-
 <div class="card">
     <div class="card-header">
         {{ trans('cruds.billingRun.title_singular') }} {{ trans('global.list') }}
@@ -72,7 +64,7 @@
                         <td>
                             @foreach($invoice->assigned_staffs as $key => $item)
                             <span class="badge badge-info">{{ $item->user->name }}</span>
-                        @endforeach
+                            @endforeach
                         </td>
                         <td>
                             {{ $invoice->total_hours_consumed ?? '' }}
@@ -97,7 +89,8 @@
                         </td>
                         <td>
                             @can('billing_run_show')
-                            <a class="btn btn-xs btn-primary" href="{{ route('admin.billing-runs.show', $invoice->id) }}">
+                            <a class="btn btn-xs btn-primary"
+                                href="{{ route('admin.billing-runs.show', $invoice->id) }}">
                                 {{ trans('global.view') }}
                             </a>
                             @endcan
@@ -107,16 +100,21 @@
                                 id])}}" enctype="multipart/form-data">
                                 @method('PUT')
                                 @csrf
-                                <input type="hidden" name="date" id="date" value="{{ old('date', $invoice->date) }}">
+                                <input type="hidden" name="total_amount" id="total_amount"
+                                    value="{{ old('total_amount', $invoice->total_amount) }}">
+                                <input type="hidden" name="total_hours_consumed" id="total_hours_consumed"
+                                    value="{{ old('total_hours_consumed', $invoice->total_hours_consumed) }}">
+                                <input type="hidden" name="hour_charges" id="hour_charges"
+                                    value="{{ old('hour_charges', $invoice->hour_charges) }}">
+                                <input type="hidden" name="description" id="description"
+                                    value="{{ old('description', $invoice->description) }}">
+                                <input type="hidden" name="status" id="status" value="invoice-generated">
                                 <input type="hidden" name="client_id" id="client_id"
                                     value="{{ old('client_id', $invoice->client_id) }}">
                                 <input type="hidden" name="expense_id" id="expense_id"
                                     value="{{ old('expense_id', $invoice->expense_id) }}">
-                                <input type="hidden" name="amount" id="amount"
-                                    value="{{ old('amount', $invoice->amount) }}">
-                                <input type="hidden" name="status" id="status" value="invoice-generated">
-                                <input type="hidden" name="description" id="description"
-                                    value="{{ old('description', $invoice->description) }}">
+                                <input type="hidden" name="appointment_id" id="appointment_id"
+                                    value="{{ old('appointment_id', $invoice->appointment_id) }}">
                                 <input class="btn btn-xs btn-warning" type="submit"
                                     value="{{ trans('cruds.billingRun.generate_invoice') }}">
                             </form>
@@ -179,6 +177,37 @@
   }
   dtButtons.push(deleteButton)
 @endcan
+//
+@can('expense_delete')
+  let invoiceButtonTrans = '{{ trans('cruds.billingRun.multiple_approval_request') }}'
+  let invoiceButton = {
+    text: invoiceButtonTrans,
+    url: "{{ route('admin.billing-runs.multipleInvoiceApproval') }}",
+    className: 'btn-warning',
+    action: function (e, dt, node, config) {
+      var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
+          return $(entry).data('entry-id')
+      });
+
+      if (ids.length === 0) {
+        alert('{{ trans('global.datatables.zero_selected') }}')
+
+        return
+      }
+
+      if (confirm('{{ trans('global.areYouSure') }}')) {
+        $.ajax({
+          headers: {'x-csrf-token': _token},
+          method: 'POST',
+          url: config.url,
+          data: { ids: ids, _method: 'POST' }})
+          .done(function () { location.reload() })
+      }
+    }
+  }
+  dtButtons.push(invoiceButton)
+@endcan
+//
 
   $.extend(true, $.fn.dataTable.defaults, {
     orderCellsTop: true,

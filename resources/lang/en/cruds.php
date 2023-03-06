@@ -415,6 +415,7 @@ return [
         'title'          => 'Billing Run',
         'title_singular' => 'Billing Run',
         'generate_invoice'               => 'Generate Invoice',
+        'multiple_approval_request' => 'Multiple Approval Request',
         'fields'         => [
             'id'                    => 'ID',
             'id_helper'             => ' ',
@@ -467,6 +468,7 @@ return [
     'invoice' => [
         'title'          => 'Invoices',
         'title_singular' => 'Invoice',
+        'generate_single_invoice' => 'Genearte Single Invoice',
         'fields'         => [
             'id'                    => 'ID',
             'id_helper'             => ' ',
