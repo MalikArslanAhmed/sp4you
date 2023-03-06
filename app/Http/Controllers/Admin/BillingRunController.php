@@ -17,8 +17,8 @@ class BillingRunController extends Controller
     {
         abort_if(Gate::denies('billing_run_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $invoices = Invoice::where('status','!=','approved')
-        ->with(['client', 'user', 'expense'])->get();
-
+        ->with(['client', 'user', 'expense','assigned_staffs.user'])->get();
+// dd($invoices);
         return view('admin.billingRuns.index', compact('invoices'));
     }
 

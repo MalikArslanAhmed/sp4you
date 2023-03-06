@@ -70,7 +70,9 @@
                             <span class="badge badge-info">{{ $invoice->client->first_name }}</span>
                         </td>
                         <td>
-                            <span class="badge badge-info">{{ $invoice->user->name }}</span>
+                            @foreach($invoice->assigned_staffs as $key => $item)
+                            <span class="badge badge-info">{{ $item->user->name }}</span>
+                        @endforeach
                         </td>
                         <td>
                             {{ $invoice->total_hours_consumed ?? '' }}
@@ -88,10 +90,10 @@
                             {{ $invoice->description ?? '' }}
                         </td>
                         <td>
-                            {{ $invoice->expense->appointment->start_time ?? '' }}
+                            {{ $invoice->appointment->start_time ?? '' }}
                         </td>
                         <td>
-                            {{ $invoice->date ?? '' }}
+                            {{ $invoice->appointment_date ?? '' }}
                         </td>
                         <td>
                             @can('billing_run_show')

@@ -10,6 +10,8 @@ use App\Http\Requests\UpdateAppointmentRequest;
 use App\Models\AppoimntmentStatus;
 use App\Models\Appointment;
 use App\Models\CrmCustomer;
+use App\Models\Invoice;
+use App\Models\InvoiceDetail;
 use App\Models\LeaveApplication;
 use App\Models\User;
 use Gate;
@@ -19,6 +21,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
 use Illuminate\Console\View\Components\Alert;
 use App\Models\StaffAvailability;
+use DateTime;
+use Illuminate\Support\Facades\DB;
 
 class AppointmentController extends Controller
 {
@@ -48,22 +52,31 @@ class AppointmentController extends Controller
 
     public function store(StoreAppointmentRequest $request)
     {
-        $this->availibilityCheck($request->all());
-        $appointment = Appointment::create($request->all());
-        $appointment->clients()->sync($request->input('clients', []));
-        $appointment->assigned_staffs()->sync($request->input('assigned_staffs', []));
-        foreach ($request->input('photos', []) as $file) {
-            $appointment->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('photos');
-        }
+        try {
+            DB::beginTransaction();
+            $this->availibilityCheck($request->all());
+            $appointment = Appointment::create($request->all());
+            if ($appointment['status_id'] == 2) {
+                $this->makeBills($appointment['id'], $request->all());
+            }
+            $appointment->clients()->sync($request->input('clients', []));
+            $appointment->assigned_staffs()->sync($request->input('assigned_staffs', []));
+            foreach ($request->input('photos', []) as $file) {
+                $appointment->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('photos');
+            }
 
-        foreach ($request->input('documents', []) as $file) {
-            $appointment->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('documents');
-        }
+            foreach ($request->input('documents', []) as $file) {
+                $appointment->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('documents');
+            }
 
-        if ($media = $request->input('ck-media', false)) {
-            Media::whereIn('id', $media)->update(['model_id' => $appointment->id]);
+            if ($media = $request->input('ck-media', false)) {
+                Media::whereIn('id', $media)->update(['model_id' => $appointment->id]);
+            }
+            DB::commit();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            throw $exception;
         }
-
         return redirect()->route('admin.appointments.index');
     }
 
@@ -84,38 +97,47 @@ class AppointmentController extends Controller
 
     public function update(UpdateAppointmentRequest $request, Appointment $appointment)
     {
-        $this->availibilityCheck($request->all());
-        $appointment->update($request->all());
-        $appointment->clients()->sync($request->input('clients', []));
-        $appointment->assigned_staffs()->sync($request->input('assigned_staffs', []));
-        if (count($appointment->photos) > 0) {
-            foreach ($appointment->photos as $media) {
-                if (!in_array($media->file_name, $request->input('photos', []))) {
-                    $media->delete();
+        try {
+            DB::beginTransaction();
+            $this->availibilityCheck($request->all());
+            if ($request->all()['status_id'] == 2) {
+                $this->makeBills($appointment['id'], $request->all());
+            }
+            $appointment->update($request->all());
+            $appointment->clients()->sync($request->input('clients', []));
+            $appointment->assigned_staffs()->sync($request->input('assigned_staffs', []));
+            if (count($appointment->photos) > 0) {
+                foreach ($appointment->photos as $media) {
+                    if (!in_array($media->file_name, $request->input('photos', []))) {
+                        $media->delete();
+                    }
                 }
             }
-        }
-        $media = $appointment->photos->pluck('file_name')->toArray();
-        foreach ($request->input('photos', []) as $file) {
-            if (count($media) === 0 || !in_array($file, $media)) {
-                $appointment->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('photos');
-            }
-        }
-
-        if (count($appointment->documents) > 0) {
-            foreach ($appointment->documents as $media) {
-                if (!in_array($media->file_name, $request->input('documents', []))) {
-                    $media->delete();
+            $media = $appointment->photos->pluck('file_name')->toArray();
+            foreach ($request->input('photos', []) as $file) {
+                if (count($media) === 0 || !in_array($file, $media)) {
+                    $appointment->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('photos');
                 }
             }
-        }
-        $media = $appointment->documents->pluck('file_name')->toArray();
-        foreach ($request->input('documents', []) as $file) {
-            if (count($media) === 0 || !in_array($file, $media)) {
-                $appointment->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('documents');
-            }
-        }
 
+            if (count($appointment->documents) > 0) {
+                foreach ($appointment->documents as $media) {
+                    if (!in_array($media->file_name, $request->input('documents', []))) {
+                        $media->delete();
+                    }
+                }
+            }
+            $media = $appointment->documents->pluck('file_name')->toArray();
+            foreach ($request->input('documents', []) as $file) {
+                if (count($media) === 0 || !in_array($file, $media)) {
+                    $appointment->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('documents');
+                }
+            }
+            DB::commit();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            throw $exception;
+        }
         return redirect()->route('admin.appointments.index');
     }
 
@@ -275,6 +297,45 @@ class AppointmentController extends Controller
                 'end_time' => ['Staff ' . join(', ', $end_time_errors) . ' is not available on selected End Time']
             ]);
             throw $error;
+        }
+    }
+
+    public function makeBills($id, $appointment)
+    {
+        $start_time = Carbon::createFromFormat('d/m/Y H:i:s', $appointment['start_time']);
+        $end_time = Carbon::createFromFormat('d/m/Y H:i:s', $appointment['end_time']);
+
+        $amount = 0;
+        $day = $start_time->format('l');
+        $evening_time = Carbon::createFromFormat('d/m/Y H:i:s', $end_time->format('d/m/Y') . ' 17:00:00');
+        if ($day == 'Saturday' || $day == 'Sunday') {
+            $amount = 70;
+        } else {
+            if ($start_time->lt($evening_time)) {
+                $amount = 40;
+            } else {
+                $amount = 65;
+            }
+        }
+        foreach ($appointment['clients'] as $client) {
+            $bill_data = [
+                'total_amount' => ($amount * $start_time->diffInHours($end_time)) * (count($appointment['assigned_staffs']) / count($appointment['clients'])),
+                'total_hours_consumed' => $start_time->diffInHours($end_time),
+                'hour_charges' => $amount,
+                'description' => $appointment['notes'],
+                'status' => 'in-progress',
+                'appointment_id' => $id,
+                'client_id' => $client,
+                'expense_id' => null,
+            ];
+            $invoice = Invoice::create($bill_data);
+            foreach ($appointment['assigned_staffs'] as $staff) {
+                $invoice_details_data = [
+                    'invoice_id' => $invoice['id'],
+                    'user_id' => $staff,
+                ];
+                InvoiceDetail::create($invoice_details_data);
+            }
         }
     }
 }

@@ -1,13 +1,13 @@
 @extends('layouts.admin')
 @section('content')
 @can('appointment_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.appointments.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.appointment.title_singular') }}
-            </a>
-        </div>
+<div style="margin-bottom: 10px;" class="row">
+    <div class="col-lg-12">
+        <a class="btn btn-success" href="{{ route('admin.appointments.create') }}">
+            {{ trans('global.add') }} {{ trans('cruds.appointment.title_singular') }}
+        </a>
     </div>
+</div>
 @endcan
 <div class="card">
     <div class="card-header">
@@ -77,94 +77,98 @@
                 </thead>
                 <tbody>
                     @foreach($appointments as $key => $appointment)
-                        <tr data-entry-id="{{ $appointment->id }}">
-                            <td>
+                    <tr data-entry-id="{{ $appointment->id }}">
+                        <td>
 
-                            </td>
-                            <td>
-                                {{ $appointment->id ?? '' }}
-                            </td>
-                            <td>
-                                @foreach($appointment->clients as $key => $item)
-                                    <span class="badge badge-info">{{ $item->first_name }}</span>
-                                @endforeach
-                            </td>
-                            <td>
-                                @foreach($appointment->assigned_staffs as $key => $item)
-                                    <span class="badge badge-info">{{ $item->name }}</span>
-                                @endforeach
-                            </td>
-                            <td>
-                                {{ $appointment->notes ?? '' }}
-                            </td>
-                            <td>
-                                {{ $appointment->start_time ?? '' }}
-                            </td>
-                            <td>
-                                {{ $appointment->end_time ?? '' }}
-                            </td>
-                            <td>
-                                {{ $appointment->check_in ?? '' }}
-                            </td>
-                            <td>
-                                {{ $appointment->check_out ?? '' }}
-                            </td>
-                            <td>
-                                {{ $appointment->address ?? '' }}
-                            </td>
-                            <td>
-                                {{ $appointment->city ?? '' }}
-                            </td>
-                            <td>
-                                {{ $appointment->postcode ?? '' }}
-                            </td>
-                            <td>
-                                {{ $appointment->state ?? '' }}
-                            </td>
-                            <td>
-                                {{ $appointment->status->status ?? '' }}
-                            </td>
-                            <td>
-                                {{ $appointment->billing_run ?? '' }}
-                            </td>
-                            <td>
-                                @foreach($appointment->photos as $key => $media)
-                                    <a href="{{ $media->getUrl() }}" target="_blank" style="display: inline-block">
-                                        <img src="{{ $media->getUrl('thumb') }}">
-                                    </a>
-                                @endforeach
-                            </td>
-                            <td>
-                                @foreach($appointment->documents as $key => $media)
-                                    <a href="{{ $media->getUrl() }}" target="_blank">
-                                        {{ trans('global.view_file') }}
-                                    </a>
-                                @endforeach
-                            </td>
-                            <td>
-                                @can('appointment_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.appointments.show', $appointment->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
-                                @endcan
+                        </td>
+                        <td>
+                            {{ $appointment->id ?? '' }}
+                        </td>
+                        <td>
+                            @foreach($appointment->clients as $key => $item)
+                            <span class="badge badge-info">{{ $item->first_name }}</span>
+                            @endforeach
+                        </td>
+                        <td>
+                            @foreach($appointment->assigned_staffs as $key => $item)
+                            <span class="badge badge-info">{{ $item->name }}</span>
+                            @endforeach
+                        </td>
+                        <td>
+                            {{ $appointment->notes ?? '' }}
+                        </td>
+                        <td>
+                            {{ $appointment->start_time ?? '' }}
+                        </td>
+                        <td>
+                            {{ $appointment->end_time ?? '' }}
+                        </td>
+                        <td>
+                            {{ $appointment->check_in ?? '' }}
+                        </td>
+                        <td>
+                            {{ $appointment->check_out ?? '' }}
+                        </td>
+                        <td>
+                            {{ $appointment->address ?? '' }}
+                        </td>
+                        <td>
+                            {{ $appointment->city ?? '' }}
+                        </td>
+                        <td>
+                            {{ $appointment->postcode ?? '' }}
+                        </td>
+                        <td>
+                            {{ $appointment->state ?? '' }}
+                        </td>
+                        <td>
+                            {{ $appointment->status->status ?? '' }}
+                        </td>
+                        <td>
+                            {{ $appointment->billing_run ?? '' }}
+                        </td>
+                        <td>
+                            @foreach($appointment->photos as $key => $media)
+                            <a href="{{ $media->getUrl() }}" target="_blank" style="display: inline-block">
+                                <img src="{{ $media->getUrl('thumb') }}">
+                            </a>
+                            @endforeach
+                        </td>
+                        <td>
+                            @foreach($appointment->documents as $key => $media)
+                            <a href="{{ $media->getUrl() }}" target="_blank">
+                                {{ trans('global.view_file') }}
+                            </a>
+                            @endforeach
+                        </td>
+                        <td>
+                            @can('appointment_show')
+                            <a class="btn btn-xs btn-primary"
+                                href="{{ route('admin.appointments.show', $appointment->id) }}">
+                                {{ trans('global.view') }}
+                            </a>
+                            @endcan
+                            @if($appointment->status->status == 'Booked')
+                            @can('appointment_edit')
+                            <a class="btn btn-xs btn-info"
+                                href="{{ route('admin.appointments.edit', $appointment->id) }}">
+                                {{ trans('global.edit') }}
+                            </a>
+                            @endcan
+                            @endif
+                            @can('appointment_delete')
+                            <form action="{{ route('admin.appointments.destroy', $appointment->id) }}" method="POST"
+                                onsubmit="return confirm('{{ trans('global.areYouSure') }}');"
+                                style="display: inline-block;">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                            </form>
+                            @endcan
 
-                                @can('appointment_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.appointments.edit', $appointment->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
-                                @endcan
+                        </td>
 
-                                @can('appointment_delete')
-                                    <form action="{{ route('admin.appointments.destroy', $appointment->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                @endcan
-
-                            </td>
-
-                        </tr>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -220,7 +224,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

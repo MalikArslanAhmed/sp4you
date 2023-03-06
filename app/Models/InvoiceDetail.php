@@ -9,13 +9,13 @@ use App\Traits\Auditable;
 use Carbon\Carbon;
 use \DateTimeInterface;
 
-class Invoice extends Model
+class InvoiceDetail extends Model
 {
     use SoftDeletes;
     use Auditable;
     use HasFactory;
 
-    public $table = 'invoices';
+    public $table = 'invoice_details';
 
 
     protected $dates = [
@@ -25,18 +25,8 @@ class Invoice extends Model
     ];
 
     protected $fillable = [
-        'client_id',
-        'expense_id',
-        'total_amount',
-        'total_hours_consumed',
-        'hour_charges',
-        'status',
-        'appointment_id',
-        'xero_invoice_id',
-        'description',
-        'created_at',
-        'updated_at',
-        'deleted_at',
+        'invoice_id',
+        'user_id'
     ];
 
 
@@ -50,32 +40,13 @@ class Invoice extends Model
         $this->attributes['date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
     }
 
-
-    public function client()
-    {
-        return $this->belongsTo(CrmCustomer::class, 'client_id');
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function expense()
-    {
-        return $this->belongsTo(Expense::class, 'expense_id');
-    }
-    public function appointment()
-    {
-        return $this->belongsTo(Appointment::class, 'appointment_id');
-    }
-    public function assigned_staffs()
-    {
-        return $this->hasMany(InvoiceDetail::class, 'invoice_id', 'id');
-    }
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
     }
-
 }

@@ -13,7 +13,6 @@ class CreateInvoicesTable extends Migration
             $table->decimal('total_amount', 15, 2)->nullable();
             $table->decimal('total_hours_consumed', 15, 2)->nullable();
             $table->decimal('hour_charges', 15, 2)->nullable();
-            $table->date('date');
             $table->string('description')->nullable();
             $table->string('xero_invoice_id')->nullable();
             $table->enum('status', ['in-progress','invoice-generated', 'approved'])->nullable();
