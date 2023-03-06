@@ -35,10 +35,8 @@ class Expense extends Model implements HasMedia
     protected $fillable = [
         'date',
         'decscription',
-        'client_id',
         'appointment_id',
         'ammount',
-        'invoice_id',
         'group_expense',
         'created_at',
         'updated_at',
@@ -73,9 +71,9 @@ class Expense extends Model implements HasMedia
         return $file;
     }
 
-    public function client()
+    public function expenseDetails()
     {
-        return $this->belongsTo(CrmCustomer::class, 'client_id');
+        return $this->hasMany(ExpenseDetail::class, 'expense_id','id');
     }
 
     public function appointment()

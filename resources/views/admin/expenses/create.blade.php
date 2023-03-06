@@ -47,9 +47,9 @@
                         <option value="{{ $id }}" {{ old('client_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach
                 </select>
-                @if($errors->has('client'))
+                @if($errors->has('client_id'))
                     <div class="invalid-feedback">
-                        {{ $errors->first('client') }}
+                        {{ $errors->first('client_id') }}
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.expense.fields.client_helper') }}</span>
@@ -67,8 +67,8 @@
                 @endif
             </div>
             <div class="form-group">
-                <label for="appointment_id">{{ trans('cruds.expense.fields.appointment') }}</label>
-                <select class="form-control select2 {{ $errors->has('appointment') ? 'is-invalid' : '' }}" name="appointment_id" id="appointment_id">
+                <label class="required" for="appointment_id">{{ trans('cruds.expense.fields.appointment') }}</label>
+                <select class="form-control select2 {{ $errors->has('appointment') ? 'is-invalid' : '' }}" name="appointment_id" id="appointment_id" required>
                     @foreach($appointments as $id => $entry)
                         <option value="{{ $id }}" {{ old('appointment_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach

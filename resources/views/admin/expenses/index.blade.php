@@ -46,9 +46,9 @@
                         <th>
                             {{ trans('cruds.expense.fields.group_expense') }}
                         </th>
-                        <th>
+                        {{-- <th>
                             {{ trans('cruds.expense.fields.invoice_id') }}
-                        </th>
+                        </th> --}}
                         <th>
                             &nbsp;
                         </th>
@@ -77,7 +77,9 @@
                                 @endif
                             </td>
                             <td>
-                                {{ $expense->client->first_name ?? '' }}
+                                @foreach($expense->expenseDetails as $key => $item)
+                                <span class="badge badge-info">{{ $item->client->first_name }}</span>
+                                @endforeach
                             </td>
                             <td>
                                 {{ $expense->appointment->start_time ?? '' }}
@@ -88,9 +90,9 @@
                             <td>
                                 {{ $expense->group_expense ? 'Yes':'No' }}
                             </td>
-                            <td>
+                            {{-- <td>
                                 {{ $expense->invoice->id ?? '' }}
-                            </td>
+                            </td> --}}
                             <td>
                                 @can('expense_show')
                                     <a class="btn btn-xs btn-primary" href="{{ route('admin.expenses.show', $expense->id) }}">

@@ -14,7 +14,6 @@ class CreateExpensesTable extends Migration
             $table->string('decscription')->nullable();
             $table->decimal('ammount', 15, 2)->nullable();
             $table->boolean('group_expense')->default(0)->nullable();
-            $table->integer('invoice_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

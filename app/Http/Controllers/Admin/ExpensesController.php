@@ -10,7 +10,9 @@ use App\Http\Requests\UpdateExpenseRequest;
 use App\Models\Appointment;
 use App\Models\CrmCustomer;
 use App\Models\Expense;
+use App\Models\ExpenseDetail;
 use App\Models\Invoice;
+use App\Models\InvoiceDetail;
 use Carbon\Carbon;
 use Gate;
 use Illuminate\Http\Request;
@@ -25,7 +27,7 @@ class ExpensesController extends Controller
     {
         abort_if(Gate::denies('expense_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $expenses = Expense::with(['client', 'appointment', 'invoice', 'media'])->get();
+        $expenses = Expense::with(['expenseDetails', 'appointment',  'media'])->get();
 
         return view('admin.expenses.index', compact('expenses'));
     }
@@ -44,10 +46,18 @@ class ExpensesController extends Controller
     public function store(StoreExpenseRequest $request)
     {
         $data = $request->all();
+        if ($data['group_expense'] == 0 && !isset($data['client_id'])) {
+            $error = \Illuminate\Validation\ValidationException::withMessages([
+                'group_expense' => ['If client is not selected then group expense should mark as true']
+            ]);
+            throw $error;
+        }
         $expense = Expense::create($data);
+        // dd($expense);
         $appointment = Appointment::where('id', $expense->appointment_id)
             ->with(['clients', 'assigned_staffs', 'status', 'media'])
             ->first();
+        $this->makeExpenseDetails($expense, $appointment, $data);
         $this->makeBills($expense, $appointment);
         if ($request->input('receipt_photo', false)) {
             $expense->addMedia(storage_path('tmp/uploads/' . basename($request->input('receipt_photo'))))->toMediaCollection('receipt_photo');
@@ -59,7 +69,52 @@ class ExpensesController extends Controller
 
         return redirect()->route('admin.expenses.index');
     }
-
+    public function makeExpenseDetails($expense, $appointment, $data)
+    {
+        $detailsData = [];
+        if ($expense['group_expense'] == 1) {
+            foreach ($appointment['clients'] as $client) {
+                array_push($detailsData, [
+                    'expense_id' => $expense['id'],
+                    'client_id' => $client['id'],
+                ]);
+            }
+            $expenseDetails =  ExpenseDetail::insert($detailsData);
+        } else {
+            $detailsData = [
+                'expense_id' => $expense['id'],
+                'client_id' => $data['client_id'],
+            ];
+            $expenseDetails =  ExpenseDetail::create($detailsData);
+        }
+    }
+    public function makeBills($expense, $appointment)
+    {
+        $expense_details_data = ExpenseDetail::where('expense_id', $expense['id'])->get();
+        foreach ($expense_details_data  as $expenseDetails) {
+            $bill_data = [
+                'total_amount' => $expenseDetails['ammount'],
+                'total_hours_consumed' => null,
+                'hour_charges' => null,
+                'description' => $expenseDetails['decscription'],
+                'status' => 'in-progress',
+                'appointment_id' => $expense['appointment_id'],
+                'client_id' => $expenseDetails['client_id'],
+                'expense_id' => $expense['id'],
+            ];
+            if ($expense['group_expense'] == 1) {
+                $bill_data['total_amount'] = $expense['ammount'] / count($expense_details_data);
+            }
+            $invoice = Invoice::create($bill_data);
+            foreach ($appointment['assigned_staffs'] as $staff) {
+                $invoice_details_data = [
+                    'invoice_id' => $invoice['id'],
+                    'user_id' => $staff['id'],
+                ];
+                InvoiceDetail::create($invoice_details_data);
+            }
+        }
+    }
     public function edit(Expense $expense)
     {
         abort_if(Gate::denies('expense_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -69,7 +124,7 @@ class ExpensesController extends Controller
         $appointments = Appointment::pluck('start_time', 'id')->prepend(trans('global.pleaseSelect'), '');
 
 
-        $expense->load('client', 'appointment' );
+        $expense->load('client', 'appointment');
 
         return view('admin.expenses.edit', compact('appointments', 'clients', 'expense'));
     }
@@ -127,28 +182,5 @@ class ExpensesController extends Controller
         $media         = $model->addMediaFromRequest('upload')->toMediaCollection('ck-media');
 
         return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
-    }
-
-    public function makeBills($expense, $appointment)
-    {
-        $start_time = Carbon::parse($appointment['start_time']);
-        $end_time = Carbon::parse($appointment['end_time']);
-        foreach ($appointment['assigned_staffs'] as $staff) {
-            $bill_data = [
-                'total_amount' => ($expense['ammount']) * $start_time->diffInHours($end_time),
-                'total_hours_consumed' => $start_time->diffInHours($end_time),
-                'hour_charges' => ($expense['ammount']),
-                'date' => $expense['date'],
-                'description' => $expense['decscription'],
-                'status' => 'in-progress',
-                'client_id' => $expense['client_id'],
-                'user_id' => $staff['id'],
-                'expense_id' => $expense['id'],
-            ];
-            if ($expense['group_expense']) {
-                $bill_data['amount'] = ($expense['ammount'] / count($appointment['clients'])) * $start_time->diffInHours($end_time);
-            }
-            Invoice::create($bill_data);
-        }
     }
 }

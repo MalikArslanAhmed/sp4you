@@ -93,7 +93,7 @@
                             {{ $invoice->appointment->start_time ?? '' }}
                         </td>
                         <td>
-                            {{ $invoice->appointment_date ?? '' }}
+                            {{ $invoice->expense->date ?? '' }}
                         </td>
                         <td>
                             @can('billing_run_show')
