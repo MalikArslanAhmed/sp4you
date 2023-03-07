@@ -11,13 +11,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Dyrynda\Database\Support\CascadeSoftDeletes;
 
 class Appointment extends Model implements HasMedia
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
     use InteractsWithMedia;
     use Auditable;
     use HasFactory;
+
+    protected $cascadeDeletes = ['expenseDetails','invoices'];
 
     public $table = 'appointments';
 

@@ -151,7 +151,7 @@ class ExpensesController extends Controller
     {
         abort_if(Gate::denies('expense_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $expense->load('client', 'appointment', 'invoice');
+        $expense->load('expenseDetails', 'appointment',  'media');
 
         return view('admin.expenses.show', compact('expense'));
     }

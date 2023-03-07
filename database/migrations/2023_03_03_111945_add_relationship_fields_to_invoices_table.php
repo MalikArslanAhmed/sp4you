@@ -13,7 +13,7 @@ class AddRelationshipFieldsToInvoicesTable extends Migration
             $table->unsignedBigInteger('client_id')->nullable();
             $table->foreign('client_id', 'client_fk_7872160')->references('id')->on('crm_customers');
             $table->unsignedBigInteger('expense_id')->nullable();
-            $table->foreign('expense_id', 'expense_fk_7872162')->references('id')->on('expenses');
+            $table->foreign('expense_id', 'expense_fk_7872162')->references('id')->on('expenses')->onDelete('cascade');;
             $table->unsignedBigInteger('appointment_id')->nullable();
             $table->foreign('appointment_id', 'appointment_fk_7872169')->references('id')->on('appointments');
         });

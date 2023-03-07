@@ -11,13 +11,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-
+use Dyrynda\Database\Support\CascadeSoftDeletes;
 class Expense extends Model implements HasMedia
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
     use InteractsWithMedia;
     use Auditable;
     use HasFactory;
+    protected $cascadeDeletes = ['expenseDetails','invoices'];
 
     public $table = 'expenses';
 
@@ -74,6 +75,11 @@ class Expense extends Model implements HasMedia
     public function expenseDetails()
     {
         return $this->hasMany(ExpenseDetail::class, 'expense_id','id');
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class, 'expense_id','id');
     }
 
     public function appointment()

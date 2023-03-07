@@ -57,7 +57,9 @@
                             {{ trans('cruds.expense.fields.client') }}
                         </th>
                         <td>
-                            {{ $expense->client->first_name ?? '' }}
+                            @foreach($expense->expenseDetails as $key => $item)
+                            <span class="badge badge-info">{{ $item->client->first_name }}</span>
+                            @endforeach
                         </td>
                     </tr>
                     <tr>
@@ -84,14 +86,14 @@
                             {{ $expense->group_expense?'Yes':'No' }}
                         </td>
                     </tr>
-                    <tr>
+                    {{-- <tr>
                         <th>
                             {{ trans('cruds.expense.fields.invoice_id') }}
                         </th>
                         <td>
                             {{ $expense->invoice->bill ?? '' }}
                         </td>
-                    </tr>
+                    </tr> --}}
                 </tbody>
             </table>
             <div class="form-group">

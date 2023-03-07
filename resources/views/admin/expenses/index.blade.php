@@ -100,11 +100,11 @@
                                     </a>
                                 @endcan
 
-                                @can('expense_edit')
+                                {{-- @can('expense_edit')
                                     <a class="btn btn-xs btn-info" href="{{ route('admin.expenses.edit', $expense->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
-                                @endcan
+                                @endcan --}}
 
                                 @can('expense_delete')
                                     <form action="{{ route('admin.expenses.destroy', $expense->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">

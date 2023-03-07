@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('expense_details', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('expense_id')->nullable();
-            $table->foreign('expense_id', 'invoice_fk_7872266')->references('id')->on('expenses');
+            $table->foreign('expense_id')->references('id')->on('expenses')->onDelete('cascade');
             $table->unsignedBigInteger('client_id')->nullable();
             $table->foreign('client_id', 'client_fk_7872267')->references('id')->on('crm_customers');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
