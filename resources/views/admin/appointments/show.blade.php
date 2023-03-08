@@ -194,9 +194,9 @@
         <div class="tab-pane" role="tabpanel" id="appointment_expenses">
             @includeIf('admin.appointments.relationships.appointmentExpenses', ['expenses' => $appointment->appointmentExpenses])
         </div>
-        <div class="tab-pane" role="tabpanel" id="appointment_invoices">
+        {{-- <div class="tab-pane" role="tabpanel" id="appointment_invoices">
             @includeIf('admin.appointments.relationships.appointmentInvoices', ['invoices' => $appointment->appointmentInvoices])
-        </div>
+        </div> --}}
     </div>
 </div>
 

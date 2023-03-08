@@ -8,15 +8,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\Auditable;
 use Carbon\Carbon;
 use \DateTimeInterface;
+use Dyrynda\Database\Support\CascadeSoftDeletes;
 
 class Invoice extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
     use Auditable;
     use HasFactory;
 
     public $table = 'invoices';
 
+    protected $cascadeDeletes = ['assigned_staffs'];
 
     protected $dates = [
         'created_at',

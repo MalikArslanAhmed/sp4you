@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\AppointmentDelete;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\MediaUploadingTrait;
 use App\Http\Requests\MassDestroyAppointmentRequest;
@@ -145,8 +146,8 @@ class AppointmentController extends Controller
     {
         abort_if(Gate::denies('appointment_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $appointment->load('clients', 'assigned_staffs', 'status', 'appointmentPhotos', 'appointmentExpenses', 'appointmentInvoices');
-
+        $appointment->load('clients', 'assigned_staffs', 'status', 'appointmentPhotos', 'appointmentExpenses');
+        // dd('gh');
         return view('admin.appointments.show', compact('appointment'));
     }
 
@@ -154,6 +155,7 @@ class AppointmentController extends Controller
     {
         abort_if(Gate::denies('appointment_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+        AppointmentDelete::dispatch($appointment);
         $appointment->delete();
 
         return back();

@@ -82,7 +82,7 @@ class BillingRunController extends Controller
 
         return redirect()->route('admin.billing-runs.index');
     }
-    public function generateSingleInvoice(MassGenerateInvoiceRequest $request)
+    public function multipleInvoiceApproval(MassGenerateInvoiceRequest $request)
     {
         $invoices = Invoice::wherein('id', request('ids'))
             ->update(['status' => 'invoice-generated']);
