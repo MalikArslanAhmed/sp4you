@@ -27,7 +27,7 @@ class InvoicesController extends Controller
         abort_if(Gate::denies('invoice_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $invoices = Invoice::where('status', '!=', 'in-progress')
-            ->with(['client', 'user', 'expense','assigned_staffs.user'])->get();
+            ->with(['client', 'user', 'expense', 'assigned_staffs.user'])->get();
 
         return view('admin.invoices.index', compact('invoices'));
     }
@@ -155,6 +155,16 @@ class InvoicesController extends Controller
     {
         $invoices = Invoice::wherein('id', request('ids'))
             ->with(['client', 'expense', 'assigned_staffs.user', 'appointment'])->get();
+        $checkIfClientAreSame = true;
+        $clientId = $invoices[0]['client']['id'];
+        foreach ($invoices as $invoice) {
+            if ($invoice['client']['id'] !== $clientId) {
+                $checkIfClientAreSame = false;
+            }
+        }
+        if(!$checkIfClientAreSame){
+            return 'error';
+        }
         // same data
         $invoiceDetails = $invoices[0];
         $xero_contact = Http::withHeaders([

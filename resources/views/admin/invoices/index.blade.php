@@ -211,7 +211,13 @@
           method: 'POST',
           url: config.url,
           data: { ids: ids, _method: 'POST' }})
-          .done(function () { location.reload() })
+          .done(function (ev) {
+        if(ev == 'error') {
+            alert('Please select same client to make single invoice')
+        }  else{
+            location.reload()
+        }
+         })
       }
     }
   }
