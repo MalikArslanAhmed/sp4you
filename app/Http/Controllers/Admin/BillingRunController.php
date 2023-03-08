@@ -53,7 +53,7 @@ class BillingRunController extends Controller
     public function show($id)
     {
         abort_if(Gate::denies('billing_run_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $invoice = Invoice::where('id', $id)->with(['client', 'user', 'expense'])->first();
+        $invoice = Invoice::where('id', $id)->with(['client', 'user', 'expense', 'assigned_staffs.user'])->first();
 
         return view('admin.billingRuns.show', compact('invoice'));
     }

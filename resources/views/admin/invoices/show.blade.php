@@ -36,7 +36,9 @@
                             {{ trans('cruds.billingRun.fields.staff') }}
                         </th>
                         <td>
-                            <span class="badge badge-info">{{ $invoice->user->name }}</span>
+                            @foreach($invoice->assigned_staffs as $key => $item)
+                            <span class="badge badge-info">{{ $item->user->name }}</span>
+                            @endforeach
                         </td>
                     </tr>
                     <tr>
@@ -92,7 +94,9 @@
                             {{ trans('cruds.billingRun.fields.appointment_date') }}
                         </th>
                         <td>
-                            "{{ $invoice->expense->appointment->start_time }}" to "{{ $invoice->expense->appointment->end_time }}"
+                            @if(isset( $invoice->appointment))
+                            {{ $invoice->appointment->start_time }}
+                            @endif
                         </td>
                     </tr>
                 </tbody>

@@ -27,7 +27,7 @@ class InvoicesController extends Controller
         abort_if(Gate::denies('invoice_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $invoices = Invoice::where('status', '!=', 'in-progress')
-            ->with(['client', 'user', 'expense'])->get();
+            ->with(['client', 'user', 'expense','assigned_staffs.user'])->get();
 
         return view('admin.invoices.index', compact('invoices'));
     }

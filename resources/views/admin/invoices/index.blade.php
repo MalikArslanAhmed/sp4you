@@ -91,7 +91,9 @@
                             {{ $invoice->description ?? '' }}
                         </td>
                         <td>
-                            {{ $invoice->appointment->start_time ?? '' }}
+                            @if(isset( $invoice->appointment))
+                            {{ $invoice->appointment->start_time }}
+                            @endif
                         </td>
                         <td>
                             {{ $invoice->expense->date ?? '' }}
