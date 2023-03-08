@@ -101,8 +101,6 @@ class InvoicesController extends Controller
     public function generateInvoice(GenerateInvoiceRequest $request, $id)
     {
         $invoiceDetails = Invoice::where('id', $id)->with('client')->first();
-        // dd(  Xero::getTokenData()['access_token'],Xero::getTokenData()['tenant_id']);
-
         $xero_contact = Http::withHeaders([
             'Authorization' => 'Bearer ' . Xero::getTokenData()['access_token'],
             'Xero-tenant-Id' => Xero::getTokenData()['tenant_id'],
