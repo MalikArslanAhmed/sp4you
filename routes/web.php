@@ -95,9 +95,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Invoices
     Route::put('invoices/generate-invoice/{id}', 'InvoicesController@generateInvoice')->name('invoices.generateInvoice')->middleware('XeroAuthenticated');
-    Route::post('invoices/generate-single-invoice', 'InvoicesController@generateSingleInvoice')->name('invoices.generateSingleInvoice')->middleware('XeroAuthenticated');
+    Route::post('invoices/generate-single-invoice', 'InvoicesController@generateSingleInvoice')->name('invoices.generateSingleInvoice');
     Route::delete('invoices/destroy', 'InvoicesController@massDestroy')->name('invoices.massDestroy')->middleware('XeroAuthenticated');
-    Route::resource('invoices', 'InvoicesController');
+    Route::resource('invoices', 'InvoicesController')->middleware('XeroAuthenticated');
 
     Route::get('system-calendar', 'SystemCalendarController@index')->name('systemCalendar');
     Route::get('global-search', 'GlobalSearchController@search')->name('globalSearch');
