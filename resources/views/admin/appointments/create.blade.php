@@ -47,7 +47,7 @@
             </div>
             <div class="form-group">
                 <label for="notes">{{ trans('cruds.appointment.fields.notes') }}</label>
-                <textarea class="form-control {{ $errors->has('notes') ? 'is-invalid' : '' }}" name="notes" id="notes">{{ old('notes') }}</textarea>
+                <textarea class="form-control {{ $errors->has('notes') ? 'is-invalid' : '' }}" name="notes" id="notes" required>{{ old('notes') }}</textarea>
                 @if($errors->has('notes'))
                     <div class="invalid-feedback">
                         {{ $errors->first('notes') }}

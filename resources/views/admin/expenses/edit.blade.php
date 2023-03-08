@@ -22,7 +22,7 @@
             </div>
             <div class="form-group">
                 <label for="decscription">{{ trans('cruds.expense.fields.decscription') }}</label>
-                <input class="form-control {{ $errors->has('decscription') ? 'is-invalid' : '' }}" type="text" name="decscription" id="decscription" value="{{ old('decscription', $expense->decscription) }}">
+                <input class="form-control {{ $errors->has('decscription') ? 'is-invalid' : '' }}" type="text" name="decscription" id="decscription" value="{{ old('decscription', $expense->decscription) }}" required>
                 @if($errors->has('decscription'))
                     <div class="invalid-feedback">
                         {{ $errors->first('decscription') }}
