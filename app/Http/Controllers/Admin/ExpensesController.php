@@ -90,13 +90,14 @@ class ExpensesController extends Controller
     }
     public function makeBills($expense, $appointment)
     {
+        // dd($expense);
         $expense_details_data = ExpenseDetail::where('expense_id', $expense['id'])->get();
         foreach ($expense_details_data  as $expenseDetails) {
             $bill_data = [
-                'total_amount' => $expenseDetails['ammount'],
+                'total_amount' => $expense['ammount'],
                 'total_hours_consumed' => null,
                 'hour_charges' => null,
-                'description' => $expenseDetails['decscription'],
+                'description' => $expense['decscription'],
                 'status' => 'in-progress',
                 'appointment_id' => $expense['appointment_id'],
                 'client_id' => $expenseDetails['client_id'],

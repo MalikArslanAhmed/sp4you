@@ -1,14 +1,6 @@
 @extends('layouts.admin')
 @section('content')
-{{-- @can('appointment_create') --}}
-<div style="margin-bottom: 10px;" class="row">
-    <div class="col-lg-12">
-        <a class="btn btn-success" href="{{ route('admin.appointments.create') }}">
-            {{ trans('global.add') }} {{ trans('cruds.appointment.title_singular') }}
-        </a>
-    </div>
-</div>
-{{-- @endcan --}}
+
 <div class="card">
     <div class="card-header">
         {{ trans('cruds.invoice.title_singular') }} {{ trans('global.list') }}
@@ -131,7 +123,7 @@
                             @endcan
                             @endif
 
-                            @can('billing_run_delete')
+                            @can('invoice_delete')
                             <form action="{{ route('admin.billing-runs.destroy', $invoice->id) }}" method="POST"
                                 onsubmit="return confirm('{{ trans('global.areYouSure') }}');"
                                 style="display: inline-block;">

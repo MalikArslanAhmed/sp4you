@@ -97,7 +97,7 @@
                             </a>
                             @endcan
                             @if($invoice->status == 'in-progress')
-                            @can('generate_invoice')
+                            @can('approve_invoice')
                             <form method="POST" action="{{route("admin.billing-runs.generateInvoice", [$invoice->
                                 id])}}" enctype="multipart/form-data">
                                 @method('PUT')
@@ -150,7 +150,7 @@
 <script>
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-@can('expense_delete')
+@can('billing_run_delete')
   let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
@@ -180,7 +180,7 @@
   dtButtons.push(deleteButton)
 @endcan
 //
-@can('expense_delete')
+@can('multiple_approval_request')
   let invoiceButtonTrans = '{{ trans('cruds.billingRun.multiple_approval_request') }}'
   let invoiceButton = {
     text: invoiceButtonTrans,

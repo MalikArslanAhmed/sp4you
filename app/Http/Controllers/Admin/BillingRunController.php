@@ -76,7 +76,6 @@ class BillingRunController extends Controller
 
     public function generateInvoice(GenerateInvoiceRequest $request, $id)
     {
-        // dd($request);
         $invoice = Invoice::findOrFail($id);
         $invoice->update($request->all());
 

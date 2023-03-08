@@ -402,6 +402,18 @@ class PermissionsTableSeeder extends Seeder
                 'id'    => 98,
                 'title' => 'leave_application_status',
             ],
+            [
+                'id'    => 99,
+                'title' => 'generate_invoice',
+            ],
+            [
+                'id'    => 100,
+                'title' => 'multiple_approval_request',
+            ],
+            [
+                'id'    => 101,
+                'title' => 'approve_invoice',
+            ],
         ];
 
         Permission::insert($permissions);
