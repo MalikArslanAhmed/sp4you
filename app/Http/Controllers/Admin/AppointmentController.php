@@ -320,10 +320,13 @@ class AppointmentController extends Controller
             }
         }
         foreach ($appointment['clients'] as $client) {
+            $hourCharges =  $amount * (count($appointment['assigned_staffs']) / count($appointment['clients']));
+            $total_hours_consumed =  $start_time->diffInHours($end_time);
+            $total_amount = $hourCharges * $total_hours_consumed;
             $bill_data = [
-                'total_amount' => ($amount * $start_time->diffInHours($end_time)) * (count($appointment['assigned_staffs']) / count($appointment['clients'])),
-                'total_hours_consumed' => $start_time->diffInHours($end_time),
-                'hour_charges' => $amount,
+                'total_amount' => $this->preventRoundOff($total_amount, 2),
+                'total_hours_consumed' => $total_hours_consumed,
+                'hour_charges' => $this->preventRoundOff($hourCharges, 2),
                 'description' => $appointment['notes'],
                 'status' => 'in-progress',
                 'appointment_id' => $id,
@@ -339,5 +342,15 @@ class AppointmentController extends Controller
                 InvoiceDetail::create($invoice_details_data);
             }
         }
+    }
+    public function preventRoundOff($number, $precision)
+    {
+        $explodeTotalString = explode('.', (string)($number));
+        if (count($explodeTotalString) == 1) {
+            return $number;
+        }
+        $number = $explodeTotalString[0] . '.' . substr($explodeTotalString[1], 0,  $precision);
+
+        return floatval($number);
     }
 }
