@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Dcblogdev\Xero\Facades\Xero;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 
 class InvoicesController extends Controller
 {
@@ -106,6 +107,11 @@ class InvoicesController extends Controller
             'Xero-tenant-Id' => Xero::getTokenData()['tenant_id'],
         ])
             ->get('https://api.xero.com/api.xro/2.0/Contacts?page=1&where=EmailAddress="' . $invoiceDetails['client']['email'] . '"')->json();
+        if ($xero_contact['Status'] !== 'OK') {
+            DB::table('xero_tokens')->truncate();
+            return redirect('/xero/connect');
+        }
+
         if (count($xero_contact['Contacts']) == 0) {
             $xero_data =                     [
                 "Name" => $invoiceDetails->client->first_name . ' ' . $invoiceDetails->client->last_name,
@@ -160,7 +166,7 @@ class InvoicesController extends Controller
                 $checkIfClientAreSame = false;
             }
         }
-        if(!$checkIfClientAreSame){
+        if (!$checkIfClientAreSame) {
             return 'error';
         }
         // same data
@@ -170,6 +176,10 @@ class InvoicesController extends Controller
             'Xero-tenant-Id' => Xero::getTokenData()['tenant_id'],
         ])
             ->get('https://api.xero.com/api.xro/2.0/Contacts?page=1&where=EmailAddress="' . $invoiceDetails['client']['email'] . '"')->json();
+        if ($xero_contact['Status'] !== 'OK') {
+            DB::table('xero_tokens')->truncate();
+            return redirect('/xero/connect');
+        }
         if (count($xero_contact['Contacts']) == 0) {
             $xero_data =                     [
                 "Name" => $invoiceDetails->client->first_name . ' ' . $invoiceDetails->client->last_name,
