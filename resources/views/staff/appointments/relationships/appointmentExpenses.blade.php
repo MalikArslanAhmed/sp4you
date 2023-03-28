@@ -43,7 +43,7 @@
                             {{ trans('cruds.expense.fields.ammount') }}
                         </th>
                         <th>
-                            {{ trans('cruds.expense.fields.bill') }}
+                            {{ trans('cruds.expense.fields.group_expense') }}
                         </th>
                         <th>
                             &nbsp;
@@ -73,7 +73,9 @@
                                 @endif
                             </td>
                             <td>
-                                {{ $expense->client->first_name ?? '' }}
+                                @foreach($expense->expenseDetails as $key => $item)
+                                <span class="badge badge-info">{{ $item->client->first_name }}</span>
+                                @endforeach
                             </td>
                             <td>
                                 {{ $expense->appointment->start_time ?? '' }}
@@ -82,7 +84,7 @@
                                 {{ $expense->ammount ?? '' }}
                             </td>
                             <td>
-                                {{ $expense->bill->bill ?? '' }}
+                                {{ $expense->group_expense ? 'Yes':'No' }}
                             </td>
                             <td>
                                 @can('expense_show')
@@ -91,11 +93,11 @@
                                     </a>
                                 @endcan
 
-                                @can('expense_edit')
+                                {{-- @can('expense_edit')
                                     <a class="btn btn-xs btn-info" href="{{ route('admin.expenses.edit', $expense->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
-                                @endcan
+                                @endcan --}}
 
                                 @can('expense_delete')
                                     <form action="{{ route('admin.expenses.destroy', $expense->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
