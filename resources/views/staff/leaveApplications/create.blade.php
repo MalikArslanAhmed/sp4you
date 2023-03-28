@@ -7,9 +7,9 @@
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route("admin.leave-applications.store") }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route("staff.leave-applications.store") }}" enctype="multipart/form-data">
             @csrf
-            <div class="form-group">
+            {{-- <div class="form-group">
                 <label class="required" for="staff_member_id">{{ trans('cruds.leaveApplication.fields.staff_member') }}</label>
                 <select class="form-control select2 {{ $errors->has('staff_member') ? 'is-invalid' : '' }}" name="staff_member_id" id="staff_member_id" required>
                     @foreach($staff_members as $id => $entry)
@@ -22,7 +22,7 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.leaveApplication.fields.staff_member_helper') }}</span>
-            </div>
+            </div> --}}
             <div class="form-group">
                 <label class="required" for="leave_start">{{ trans('cruds.leaveApplication.fields.leave_start') }}</label>
                 <input class="form-control date {{ $errors->has('leave_start') ? 'is-invalid' : '' }}" type="text" name="leave_start" id="leave_start" value="{{ old('leave_start') }}" required>
@@ -44,11 +44,11 @@
                 <span class="help-block">{{ trans('cruds.leaveApplication.fields.leave_ends_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="notes">{{ trans('cruds.leaveApplication.fields.notes') }}</label>
-                <textarea class="form-control {{ $errors->has('notes') ? 'is-invalid' : '' }}" name="notes" id="notes">{{ old('notes') }}</textarea>
-                @if($errors->has('notes'))
+                <label for="user_notes">{{ trans('cruds.leaveApproval.fields.user_notes') }}</label>
+                <textarea class="form-control {{ $errors->has('user_notes') ? 'is-invalid' : '' }}" name="user_notes" id="user_notes">{{ old('user_notes') }}</textarea>
+                @if($errors->has('user_notes'))
                     <div class="invalid-feedback">
-                        {{ $errors->first('notes') }}
+                        {{ $errors->first('user_notes') }}
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.leaveApplication.fields.notes_helper') }}</span>

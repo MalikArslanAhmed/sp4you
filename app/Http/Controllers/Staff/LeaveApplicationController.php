@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Staff;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyLeaveApplicationRequest;
-use App\Http\Requests\StoreLeaveApplicationRequest;
-use App\Http\Requests\UpdateLeaveApplicationRequest;
+use App\Http\Requests\StaffRequests\StoreLeaveApplicationRequest;
+use App\Http\Requests\StaffRequests\UpdateLeaveApplicationRequest;
 use App\Models\LeaveApplication;
 use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class LeaveApplicationController extends Controller
@@ -18,7 +19,9 @@ class LeaveApplicationController extends Controller
     {
         abort_if(Gate::denies('leave_application_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $leaveApplications = LeaveApplication::with(['staff_member'])->get();
+        $leaveApplications = LeaveApplication::with(['staff_member'])
+            ->where('staff_member_id', Auth::user()->id)
+            ->get();
 
         return view('staff.leaveApplications.index', compact('leaveApplications'));
     }
@@ -34,7 +37,9 @@ class LeaveApplicationController extends Controller
 
     public function store(StoreLeaveApplicationRequest $request)
     {
-        $leaveApplication = LeaveApplication::create($request->all());
+        $req_data = $request->all();
+        $req_data['staff_member_id'] = Auth::user()->id;
+        $leaveApplication = LeaveApplication::create($req_data);
 
         return redirect()->route('staff.leave-applications.index');
     }

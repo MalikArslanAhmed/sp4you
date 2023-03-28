@@ -44,11 +44,11 @@
                 <span class="help-block">{{ trans('cruds.leaveApplication.fields.leave_ends_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="notes">{{ trans('cruds.leaveApplication.fields.notes') }}</label>
-                <textarea class="form-control {{ $errors->has('notes') ? 'is-invalid' : '' }}" name="notes" id="notes">{{ old('notes') }}</textarea>
-                @if($errors->has('notes'))
+                <label for="user_notes">{{ trans('cruds.leaveApproval.fields.user_notes') }}</label>
+                <textarea class="form-control {{ $errors->has('user_notes') ? 'is-invalid' : '' }}" name="user_notes" id="user_notes">{{ old('user_notes') }}</textarea>
+                @if($errors->has('user_notes'))
                     <div class="invalid-feedback">
-                        {{ $errors->first('notes') }}
+                        {{ $errors->first('user_notes') }}
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.leaveApplication.fields.notes_helper') }}</span>

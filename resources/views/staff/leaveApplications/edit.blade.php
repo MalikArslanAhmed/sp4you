@@ -7,10 +7,10 @@
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route("admin.leave-applications.update", [$leaveApplication->id]) }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route("staff.leave-applications.update", [$leaveApplication->id]) }}" enctype="multipart/form-data">
             @method('PUT')
             @csrf
-            <div class="form-group">
+            {{-- <div class="form-group">
                 <label class="required" for="staff_member_id">{{ trans('cruds.leaveApplication.fields.staff_member') }}</label>
                 <select class="form-control select2 {{ $errors->has('staff_member') ? 'is-invalid' : '' }}" name="staff_member_id" id="staff_member_id" required>
                     @foreach($staff_members as $id => $entry)
@@ -23,7 +23,7 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.leaveApplication.fields.staff_member_helper') }}</span>
-            </div>
+            </div> --}}
             <div class="form-group">
                 <label class="required" for="leave_start">{{ trans('cruds.leaveApplication.fields.leave_start') }}</label>
                 <input class="form-control date {{ $errors->has('leave_start') ? 'is-invalid' : '' }}" type="text" name="leave_start" id="leave_start" value="{{ old('leave_start', $leaveApplication->leave_start) }}" required>
