@@ -77,7 +77,7 @@ class Appointment extends Model implements HasMedia
 
     public function appointmentInvoices()
     {
-        return $this->belongsToMany(Invoice::class);
+        return $this->hasMany(Invoice::class, 'appointment_id', 'id');
     }
 
     public function clients()
