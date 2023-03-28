@@ -1,9 +1,9 @@
-@extends('layouts.admin')
+@extends('layouts.staff')
 @section('content')
 @can('staff_availability_create')
 <div style="margin-bottom: 10px;" class="row">
     <div class="col-lg-12">
-        <a class="btn btn-success" href="{{ route('admin.staff-availabilities.create') }}">
+        <a class="btn btn-success" href="{{ route('staff.staff-availabilities.create') }}">
             {{ trans('global.add') }} {{ trans('cruds.staffAvailability.title_singular') }}
         </a>
     </div>
@@ -97,20 +97,20 @@
                         <td>
                             @can('staff_availability_show')
                             <a class="btn btn-xs btn-primary"
-                                href="{{ route('admin.staff-availabilities.show', $staffAvailability->id) }}">
+                                href="{{ route('staff.staff-availabilities.show', $staffAvailability->id) }}">
                                 {{ trans('global.view') }}
                             </a>
                             @endcan
 
                             @can('staff_availability_edit')
                             <a class="btn btn-xs btn-info"
-                                href="{{ route('admin.staff-availabilities.edit', $staffAvailability->id) }}">
+                                href="{{ route('staff.staff-availabilities.edit', $staffAvailability->id) }}">
                                 {{ trans('global.edit') }}
                             </a>
                             @endcan
 
                             @can('staff_availability_delete')
-                            <form action="{{ route('admin.staff-availabilities.destroy', $staffAvailability->id) }}"
+                            <form action="{{ route('staff.staff-availabilities.destroy', $staffAvailability->id) }}"
                                 method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');"
                                 style="display: inline-block;">
                                 <input type="hidden" name="_method" value="DELETE">
@@ -141,7 +141,7 @@
   let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
-    url: "{{ route('admin.staff-availabilities.massDestroy') }}",
+    url: "{{ route('staff.staff-availabilities.massDestroy') }}",
     className: 'btn-danger',
     action: function (e, dt, node, config) {
       var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {

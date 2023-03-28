@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.staff')
 @section('content')
 
 <div class="card">
@@ -7,12 +7,12 @@
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route("admin.staff-availabilities.update", [$staffAvailability->id]) }}"
+        <form method="POST" action="{{ route("staff.staff-availabilities.update", [$staffAvailability->id]) }}"
             enctype="multipart/form-data">
             @method('PUT')
             @csrf
             <div class="form-row">
-                <div class="form-group col-md-12">
+                {{-- <div class="form-group col-md-12">
                     <label for="staff_member_id">{{ trans('cruds.staffAvailability.fields.staff_member') }}</label>
                     <select class="form-control select2 {{ $errors->has('staff_member') ? 'is-invalid' : '' }}"
                         name="staff_member_id" id="staff_member_id">
@@ -28,7 +28,7 @@
                     </div>
                     @endif
                     <span class="help-block">{{ trans('cruds.staffAvailability.fields.staff_member_helper') }}</span>
-                </div>
+                </div> --}}
                 <div class="form-group col-md-6">
                     <label for="monday_from">{{ trans('cruds.staffAvailability.fields.monday_from') }}</label>
                     <input class="form-control timepicker {{ $errors->has('monday_from') ? 'is-invalid' : '' }}" type="text"

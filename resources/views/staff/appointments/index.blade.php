@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.staff')
 @section('content')
 @can('appointment_create')
 <div style="margin-bottom: 10px;" class="row">

@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.staff')
 @section('content')
 
 <div class="card">
@@ -7,7 +7,7 @@
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route("admin.appointments.update", [$appointment->id]) }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route("staff.appointments.update", [$appointment->id]) }}" enctype="multipart/form-data">
             @method('PUT')
             @csrf
             <div class="form-group">
@@ -189,7 +189,7 @@
 <script>
     var uploadedPhotosMap = {}
 Dropzone.options.photosDropzone = {
-    url: '{{ route('admin.appointments.storeMedia') }}',
+    url: '{{ route('staff.appointments.storeMedia') }}',
     maxFilesize: 10, // MB
     acceptedFiles: '.jpeg,.jpg,.png,.gif',
     addRemoveLinks: true,
@@ -250,7 +250,7 @@ Dropzone.options.photosDropzone = {
 <script>
     var uploadedDocumentsMap = {}
 Dropzone.options.documentsDropzone = {
-    url: '{{ route('admin.appointments.storeMedia') }}',
+    url: '{{ route('staff.appointments.storeMedia') }}',
     maxFilesize: 10, // MB
     addRemoveLinks: true,
     headers: {

@@ -10,6 +10,7 @@ use App\Models\StaffAvailability;
 use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class StaffAvailabilityController extends Controller
@@ -18,7 +19,9 @@ class StaffAvailabilityController extends Controller
     {
         abort_if(Gate::denies('staff_availability_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $staffAvailabilities = StaffAvailability::with(['staff_member'])->get();
+        $staffAvailabilities = StaffAvailability::where('staff_member_id',Auth::user()->id)
+        ->with(['staff_member'])
+        ->get();
 
         return view('staff.staffAvailabilities.index', compact('staffAvailabilities'));
     }
@@ -34,7 +37,9 @@ class StaffAvailabilityController extends Controller
 
     public function store(StoreStaffAvailabilityRequest $request)
     {
-        $staffAvailability = StaffAvailability::create($request->all());
+        $req_data = $request->all();
+        $req_data['staff_member_id'] = Auth::user()->id;
+        $staffAvailability = StaffAvailability::create($req_data);
 
         return redirect()->route('staff.staff-availabilities.index');
     }
