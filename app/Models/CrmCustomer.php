@@ -63,9 +63,9 @@ class CrmCustomer extends Model
         return $this->hasMany(Photo::class, 'client_id', 'id');
     }
 
-    public function clientExpenses()
+    public function clientExpensesDetails()
     {
-        return $this->hasMany(Expense::class, 'client_id', 'id');
+        return $this->hasMany(ExpenseDetail::class, 'client_id', 'id');
     }
 
     public function clientsAppointments()
@@ -75,7 +75,7 @@ class CrmCustomer extends Model
 
     public function clientsInvoices()
     {
-        return $this->belongsToMany(Invoice::class);
+        return $this->hasMany(Invoice::class, 'client_id', 'id');
     }
 
     public function status()

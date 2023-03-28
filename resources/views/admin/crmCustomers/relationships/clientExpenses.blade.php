@@ -51,54 +51,50 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($expenses as $key => $expense)
-                        <tr data-entry-id="{{ $expense->id }}">
+                    @foreach($expensesDetails as $key => $eDetail)
+                        <tr data-entry-id="{{ $eDetail->expense->id }}">
                             <td>
 
                             </td>
                             <td>
-                                {{ $expense->id ?? '' }}
+                                {{ $eDetail->expense->id ?? '' }}
                             </td>
                             <td>
-                                {{ $expense->date ?? '' }}
+                                {{ $eDetail->expense->date ?? '' }}
                             </td>
                             <td>
-                                {{ $expense->decscription ?? '' }}
+                                {{ $eDetail->expense->decscription ?? '' }}
                             </td>
                             <td>
-                                @if($expense->receipt_photo)
-                                    <a href="{{ $expense->receipt_photo->getUrl() }}" target="_blank" style="display: inline-block">
-                                        <img src="{{ $expense->receipt_photo->getUrl('thumb') }}">
+                                @if($eDetail->expense->receipt_photo)
+                                    <a href="{{ $eDetail->expense->receipt_photo->getUrl() }}" target="_blank" style="display: inline-block">
+                                        <img src="{{ $eDetail->expense->receipt_photo->getUrl('thumb') }}">
                                     </a>
                                 @endif
                             </td>
                             <td>
-                                {{ $expense->client->first_name ?? '' }}
+                                @foreach($eDetail->expense->expenseDetails as $key => $item)
+                                <span class="badge badge-info">{{ $item->client->first_name }}</span>
+                                @endforeach
                             </td>
                             <td>
-                                {{ $expense->appointment->start_time ?? '' }}
+                                {{ $eDetail->expense->appointment->start_time ?? '' }}
                             </td>
                             <td>
-                                {{ $expense->ammount ?? '' }}
+                                {{ $eDetail->expense->ammount ?? '' }}
                             </td>
                             <td>
-                                {{ $expense->bill->bill ?? '' }}
+                                {{ $eDetail->expense->group_expense ? 'Yes':'No' }}
                             </td>
                             <td>
                                 @can('expense_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.expenses.show', $expense->id) }}">
+                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.expenses.show', $eDetail->expense->id) }}">
                                         {{ trans('global.view') }}
                                     </a>
                                 @endcan
 
-                                @can('expense_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.expenses.edit', $expense->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
-                                @endcan
-
                                 @can('expense_delete')
-                                    <form action="{{ route('admin.expenses.destroy', $expense->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                    <form action="{{ route('admin.expenses.destroy', $eDetail->expense->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">

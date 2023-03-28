@@ -25,9 +25,6 @@
                             {{ trans('cruds.invoice.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.invoice.fields.bill') }}
-                        </th>
-                        <th>
                             {{ trans('cruds.invoice.fields.clients') }}
                         </th>
                         <th>
@@ -51,20 +48,17 @@
                                 {{ $invoice->id ?? '' }}
                             </td>
                             <td>
-                                {{ $invoice->bill ?? '' }}
+                                {{-- @foreach($invoice->clients as $key => $item) --}}
+                                    <span class="badge badge-info">{{ $invoice->client->first_name }}</span>
+                                {{-- @endforeach --}}
                             </td>
                             <td>
-                                @foreach($invoice->clients as $key => $item)
-                                    <span class="badge badge-info">{{ $item->first_name }}</span>
-                                @endforeach
+                                {{-- @foreach($invoice->appointments as $key => $item) --}}
+                                    <span class="badge badge-info">{{ $invoice->appointment->start_time }}</span>
+                                {{-- @endforeach --}}
                             </td>
                             <td>
-                                @foreach($invoice->appointments as $key => $item)
-                                    <span class="badge badge-info">{{ $item->start_time }}</span>
-                                @endforeach
-                            </td>
-                            <td>
-                                {{ $invoice->xero_invoice ?? '' }}
+                                {{ $invoice->xero_invoice_id ?? '' }}
                             </td>
                             <td>
                                 @can('invoice_show')
@@ -73,11 +67,11 @@
                                     </a>
                                 @endcan
 
-                                @can('invoice_edit')
+                                {{-- @can('invoice_edit')
                                     <a class="btn btn-xs btn-info" href="{{ route('admin.invoices.edit', $invoice->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
-                                @endcan
+                                @endcan --}}
 
                                 @can('invoice_delete')
                                     <form action="{{ route('admin.invoices.destroy', $invoice->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">

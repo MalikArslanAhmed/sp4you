@@ -171,7 +171,7 @@
             @includeIf('admin.crmCustomers.relationships.clientPhotos', ['photos' => $crmCustomer->clientPhotos])
         </div>
         <div class="tab-pane" role="tabpanel" id="client_expenses">
-            @includeIf('admin.crmCustomers.relationships.clientExpenses', ['expenses' => $crmCustomer->clientExpenses])
+            @includeIf('admin.crmCustomers.relationships.clientExpenses', ['expensesDetails' => $crmCustomer->clientExpensesDetails])
         </div>
         <div class="tab-pane" role="tabpanel" id="clients_appointments">
             @includeIf('admin.crmCustomers.relationships.clientsAppointments', ['appointments' => $crmCustomer->clientsAppointments])

@@ -60,9 +60,9 @@
                         <th>
                             {{ trans('cruds.appointment.fields.status') }}
                         </th>
-                        <th>
+                        {{-- <th>
                             {{ trans('cruds.appointment.fields.billing_run') }}
-                        </th>
+                        </th> --}}
                         <th>
                             {{ trans('cruds.appointment.fields.photos') }}
                         </th>
@@ -123,9 +123,9 @@
                             <td>
                                 {{ $appointment->status->status ?? '' }}
                             </td>
-                            <td>
+                            {{-- <td>
                                 {{ $appointment->billing_run ?? '' }}
-                            </td>
+                            </td> --}}
                             <td>
                                 @foreach($appointment->photos as $key => $media)
                                     <a href="{{ $media->getUrl() }}" target="_blank" style="display: inline-block">
@@ -146,12 +146,14 @@
                                         {{ trans('global.view') }}
                                     </a>
                                 @endcan
+                                @if($appointment->status->status == 'Booked')
 
                                 @can('appointment_edit')
                                     <a class="btn btn-xs btn-info" href="{{ route('admin.appointments.edit', $appointment->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
                                 @endcan
+                                @endif
 
                                 @can('appointment_delete')
                                     <form action="{{ route('admin.appointments.destroy', $appointment->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
@@ -216,7 +218,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>
