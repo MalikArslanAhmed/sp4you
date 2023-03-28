@@ -271,7 +271,7 @@
     $('.searchable-field').select2({
         minimumInputLength: 3,
         ajax: {
-            url: '{{ route("admin.globalSearch") }}',
+            url: '{{ route("staff.globalSearch") }}',
             dataType: 'json',
             type: 'GET',
             delay: 200,
