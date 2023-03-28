@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.staff')
 @section('content')
 
 <div class="card">
@@ -7,7 +7,7 @@
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route("admin.client-tags.store") }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route("staff.client-tags.store") }}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
                 <label for="tags">{{ trans('cruds.clientTag.fields.tags') }}</label>

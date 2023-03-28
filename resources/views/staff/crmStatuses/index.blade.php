@@ -1,9 +1,9 @@
-@extends('layouts.admin')
+@extends('layouts.staff')
 @section('content')
 @can('crm_status_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.crm-statuses.create') }}">
+            <a class="btn btn-success" href="{{ route('staff.crm-statuses.create') }}">
                 {{ trans('global.add') }} {{ trans('cruds.crmStatus.title_singular') }}
             </a>
         </div>
@@ -47,19 +47,19 @@
                             </td>
                             <td>
                                 @can('crm_status_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.crm-statuses.show', $crmStatus->id) }}">
+                                    <a class="btn btn-xs btn-primary" href="{{ route('staff.crm-statuses.show', $crmStatus->id) }}">
                                         {{ trans('global.view') }}
                                     </a>
                                 @endcan
 
                                 @can('crm_status_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.crm-statuses.edit', $crmStatus->id) }}">
+                                    <a class="btn btn-xs btn-info" href="{{ route('staff.crm-statuses.edit', $crmStatus->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
                                 @endcan
 
                                 @can('crm_status_delete')
-                                    <form action="{{ route('admin.crm-statuses.destroy', $crmStatus->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                    <form action="{{ route('staff.crm-statuses.destroy', $crmStatus->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
@@ -88,7 +88,7 @@
   let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
-    url: "{{ route('admin.crm-statuses.massDestroy') }}",
+    url: "{{ route('staff.crm-statuses.massDestroy') }}",
     className: 'btn-danger',
     action: function (e, dt, node, config) {
       var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
@@ -124,7 +124,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

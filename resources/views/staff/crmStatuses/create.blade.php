@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.staff')
 @section('content')
 
 <div class="card">
@@ -7,7 +7,7 @@
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route("admin.crm-statuses.store") }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route("staff.crm-statuses.store") }}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
                 <label class="required" for="name">{{ trans('cruds.crmStatus.fields.name') }}</label>
