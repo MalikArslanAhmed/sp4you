@@ -9,7 +9,7 @@
     <div class="card-body">
         <div class="form-group">
             <div class="form-group">
-                <a class="btn btn-default" href="{{ route('admin.appointments.index') }}">
+                <a class="btn btn-default" href="{{ route('staff.appointments.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
             </div>
@@ -158,7 +158,7 @@
                 </tbody>
             </table>
             <div class="form-group">
-                <a class="btn btn-default" href="{{ route('admin.appointments.index') }}">
+                <a class="btn btn-default" href="{{ route('staff.appointments.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
             </div>
@@ -189,13 +189,13 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane" role="tabpanel" id="appointment_photos">
-            @includeIf('admin.appointments.relationships.appointmentPhotos', ['photos' => $appointment->appointmentPhotos])
+            @includeIf('staff.appointments.relationships.appointmentPhotos', ['photos' => $appointment->appointmentPhotos])
         </div>
         <div class="tab-pane" role="tabpanel" id="appointment_expenses">
-            @includeIf('admin.appointments.relationships.appointmentExpenses', ['expenses' => $appointment->appointmentExpenses])
+            @includeIf('staff.appointments.relationships.appointmentExpenses', ['expenses' => $appointment->appointmentExpenses])
         </div>
         {{-- <div class="tab-pane" role="tabpanel" id="appointment_invoices">
-            @includeIf('admin.appointments.relationships.appointmentInvoices', ['invoices' => $appointment->appointmentInvoices])
+            @includeIf('staff.appointments.relationships.appointmentInvoices', ['invoices' => $appointment->appointmentInvoices])
         </div> --}}
     </div>
 </div>

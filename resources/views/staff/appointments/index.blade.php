@@ -3,7 +3,7 @@
 @can('appointment_create')
 <div style="margin-bottom: 10px;" class="row">
     <div class="col-lg-12">
-        <a class="btn btn-success" href="{{ route('admin.appointments.create') }}">
+        <a class="btn btn-success" href="{{ route('staff.appointments.create') }}">
             {{ trans('global.add') }} {{ trans('cruds.appointment.title_singular') }}
         </a>
     </div>
@@ -144,20 +144,20 @@
                         <td>
                             @can('appointment_show')
                             <a class="btn btn-xs btn-primary"
-                                href="{{ route('admin.appointments.show', $appointment->id) }}">
+                                href="{{ route('staff.appointments.show', $appointment->id) }}">
                                 {{ trans('global.view') }}
                             </a>
                             @endcan
                             @if($appointment->status->status == 'Booked')
                             @can('appointment_edit')
                             <a class="btn btn-xs btn-info"
-                                href="{{ route('admin.appointments.edit', $appointment->id) }}">
+                                href="{{ route('staff.appointments.edit', $appointment->id) }}">
                                 {{ trans('global.edit') }}
                             </a>
                             @endcan
                             @endif
                             @can('appointment_delete')
-                            <form action="{{ route('admin.appointments.destroy', $appointment->id) }}" method="POST"
+                            <form action="{{ route('staff.appointments.destroy', $appointment->id) }}" method="POST"
                                 onsubmit="return confirm('{{ trans('global.areYouSure') }}');"
                                 style="display: inline-block;">
                                 <input type="hidden" name="_method" value="DELETE">
@@ -188,7 +188,7 @@
   let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
-    url: "{{ route('admin.appointments.massDestroy') }}",
+    url: "{{ route('staff.appointments.massDestroy') }}",
     className: 'btn-danger',
     action: function (e, dt, node, config) {
       var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {

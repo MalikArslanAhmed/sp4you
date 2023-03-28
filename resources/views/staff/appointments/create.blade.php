@@ -7,7 +7,7 @@
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route("admin.appointments.store") }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route("staff.appointments.store") }}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
                 <label class="required" for="clients">{{ trans('cruds.appointment.fields.clients') }}</label>
@@ -27,7 +27,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.appointment.fields.clients_helper') }}</span>
             </div>
-            <div class="form-group">
+            {{-- <div class="form-group">
                 <label for="assigned_staffs">{{ trans('cruds.appointment.fields.assigned_staff') }}</label>
                 <div style="padding-bottom: 4px">
                     <span class="btn btn-info btn-xs select-all" style="border-radius: 0">{{ trans('global.select_all') }}</span>
@@ -44,7 +44,7 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.appointment.fields.assigned_staff_helper') }}</span>
-            </div>
+            </div> --}}
             <div class="form-group">
                 <label for="notes">{{ trans('cruds.appointment.fields.notes') }}</label>
                 <textarea class="form-control {{ $errors->has('notes') ? 'is-invalid' : '' }}" name="notes" id="notes" required>{{ old('notes') }}</textarea>
@@ -188,7 +188,7 @@
 <script>
     var uploadedPhotosMap = {}
 Dropzone.options.photosDropzone = {
-    url: '{{ route('admin.appointments.storeMedia') }}',
+    url: '{{ route('staff.appointments.storeMedia') }}',
     maxFilesize: 10, // MB
     acceptedFiles: '.jpeg,.jpg,.png,.gif',
     addRemoveLinks: true,
@@ -249,7 +249,7 @@ Dropzone.options.photosDropzone = {
 <script>
     var uploadedDocumentsMap = {}
 Dropzone.options.documentsDropzone = {
-    url: '{{ route('admin.appointments.storeMedia') }}',
+    url: '{{ route('staff.appointments.storeMedia') }}',
     maxFilesize: 10, // MB
     addRemoveLinks: true,
     headers: {
