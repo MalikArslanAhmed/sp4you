@@ -10,6 +10,7 @@ use App\Models\LeaveApplication;
 use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class LeaveApplicationController extends Controller
@@ -18,8 +19,12 @@ class LeaveApplicationController extends Controller
     {
         abort_if(Gate::denies('leave_application_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $leaveApplications = LeaveApplication::with(['staff_member'])->get();
+        $leaveApplications = LeaveApplication::with(['staff_member']);
+        if (!auth()->user()->is_admin) {
+            $leaveApplications =$leaveApplications->where('staff_member_id', Auth::user()->id);
+        }
 
+        $leaveApplications = $leaveApplications->get();
         return view('admin.leaveApplications.index', compact('leaveApplications'));
     }
 

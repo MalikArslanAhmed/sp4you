@@ -23,6 +23,7 @@ use Carbon\Carbon;
 use Illuminate\Console\View\Components\Alert;
 use App\Models\StaffAvailability;
 use DateTime;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class AppointmentController extends Controller
@@ -33,8 +34,13 @@ class AppointmentController extends Controller
     {
         abort_if(Gate::denies('appointment_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $appointments = Appointment::with(['clients', 'assigned_staffs', 'status', 'media'])->get();
-
+        $appointments = Appointment::with(['clients', 'assigned_staffs', 'status', 'media']);
+        if (!auth()->user()->is_admin) {
+            $appointments = $appointments->whereHas('assigned_staffs', function ($q) {
+                $q->where('id', Auth::user()->id);
+            });
+        }
+        $appointments = $appointments->get();
         return view('admin.appointments.index', compact('appointments'));
     }
 
@@ -53,15 +59,19 @@ class AppointmentController extends Controller
 
     public function store(StoreAppointmentRequest $request)
     {
+        $req_data = $request->all();
+        if (!auth()->user()->is_admin) {
+            $req_data['assigned_staffs'][0] = (string) Auth::user()->id;
+        }
         try {
             DB::beginTransaction();
-            $this->availibilityCheck($request->all());
-            $appointment = Appointment::create($request->all());
+            $this->availibilityCheck( $req_data);
+            $appointment = Appointment::create( $req_data);
             if ($appointment['status_id'] == 2) {
-                $this->makeBills($appointment['id'], $request->all());
+                $this->makeBills($appointment['id'],  $req_data);
             }
             $appointment->clients()->sync($request->input('clients', []));
-            $appointment->assigned_staffs()->sync($request->input('assigned_staffs', []));
+            $appointment->assigned_staffs()->sync($req_data['assigned_staffs']);
             foreach ($request->input('photos', []) as $file) {
                 $appointment->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('photos');
             }
@@ -98,15 +108,23 @@ class AppointmentController extends Controller
 
     public function update(UpdateAppointmentRequest $request, Appointment $appointment)
     {
+        $req_data = $request->all();
+        if (!auth()->user()->is_admin) {
+            $app  =  $appointment->load('assigned_staffs');
+            $ass_staff = $app['assigned_staffs']->toArray();
+            $req_data['assigned_staffs'] = array_map(function ($item) {
+                return (string)$item['id'];
+            }, $ass_staff);
+        }
         try {
             DB::beginTransaction();
-            $this->availibilityCheck($request->all());
+            $this->availibilityCheck($req_data);
             if ($request->all()['status_id'] == 2) {
-                $this->makeBills($appointment['id'], $request->all());
+                $this->makeBills($appointment['id'], $req_data);
             }
-            $appointment->update($request->all());
+            $appointment->update($req_data);
             $appointment->clients()->sync($request->input('clients', []));
-            $appointment->assigned_staffs()->sync($request->input('assigned_staffs', []));
+            $appointment->assigned_staffs()->sync($req_data['assigned_staffs']);
             if (count($appointment->photos) > 0) {
                 foreach ($appointment->photos as $media) {
                     if (!in_array($media->file_name, $request->input('photos', []))) {

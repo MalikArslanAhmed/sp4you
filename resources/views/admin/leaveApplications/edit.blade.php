@@ -12,11 +12,14 @@
             @csrf
             <div class="form-group">
                 <label class="required" for="staff_member_id">{{ trans('cruds.leaveApplication.fields.staff_member') }}</label>
-                <select class="form-control select2 {{ $errors->has('staff_member') ? 'is-invalid' : '' }}" name="staff_member_id" id="staff_member_id" required>
+                <select @disabled(!auth()->user()->is_admin) class="form-control select2 {{ $errors->has('staff_member') ? 'is-invalid' : '' }}" name="staff_member_id" id="staff_member_id" required>
                     @foreach($staff_members as $id => $entry)
                         <option value="{{ $id }}" {{ (old('staff_member_id') ? old('staff_member_id') : $leaveApplication->staff_member->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach
                 </select>
+                @if(!auth()->user()->is_admin)
+                <input hidden type="text" name="staff_member_id" id="staff_member_id" value="{{ old('leave_start', $leaveApplication->staff_member_id) }}">
+                @endif
                 @if($errors->has('staff_member'))
                     <div class="invalid-feedback">
                         {{ $errors->first('staff_member') }}

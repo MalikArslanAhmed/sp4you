@@ -29,13 +29,15 @@
             </div>
             <div class="form-group">
                 <label for="assigned_staffs">{{ trans('cruds.appointment.fields.assigned_staff') }}</label>
+                @if(auth()->user()->is_admin)
                 <div style="padding-bottom: 4px">
                     <span class="btn btn-info btn-xs select-all" style="border-radius: 0">{{ trans('global.select_all') }}</span>
                     <span class="btn btn-info btn-xs deselect-all" style="border-radius: 0">{{ trans('global.deselect_all') }}</span>
                 </div>
-                <select class="form-control select2 {{ $errors->has('assigned_staffs') ? 'is-invalid' : '' }}" name="assigned_staffs[]" id="assigned_staffs" multiple>
+                @endif
+                <select @disabled(!auth()->user()->is_admin) class="form-control select2 {{ $errors->has('assigned_staffs') ? 'is-invalid' : '' }}" name="assigned_staffs[]" id="assigned_staffs" multiple>
                     @foreach($assigned_staffs as $id => $assigned_staff)
-                        <option value="{{ $id }}" {{ in_array($id, old('assigned_staffs', [])) ? 'selected' : '' }}>{{ $assigned_staff }}</option>
+                        <option value="{{ $id }}" {{ in_array($id, old('assigned_staffs', [])) || (!auth()->user()->is_admin && $id == auth()->user()->id) ? 'selected' : '' }}>{{ $assigned_staff }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('assigned_staffs'))
