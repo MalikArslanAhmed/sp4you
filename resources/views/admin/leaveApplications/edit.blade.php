@@ -18,7 +18,7 @@
                     @endforeach
                 </select>
                 @if(!auth()->user()->is_admin)
-                <input hidden type="text" name="staff_member_id" id="staff_member_id" value="{{ old('leave_start', $leaveApplication->staff_member_id) }}">
+                <input hidden type="text" name="staff_member_id" id="staff_member_id" value="{{ old('staff_member_id', $leaveApplication->staff_member_id) }}">
                 @endif
                 @if($errors->has('staff_member'))
                     <div class="invalid-feedback">

@@ -14,7 +14,7 @@
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <label for="staff_member_id">{{ trans('cruds.staffAvailability.fields.staff_member') }}</label>
-                    <select class="form-control select2 {{ $errors->has('staff_member') ? 'is-invalid' : '' }}"
+                    <select @disabled(!auth()->user()->is_admin) class="form-control select2 {{ $errors->has('staff_member') ? 'is-invalid' : '' }}"
                         name="staff_member_id" id="staff_member_id">
                         @foreach($staff_members as $id => $entry)
                         <option value="{{ $id }}" {{ (old('staff_member_id') ? old('staff_member_id') :
@@ -22,6 +22,9 @@
                         </option>
                         @endforeach
                     </select>
+                    @if(!auth()->user()->is_admin)
+                    <input hidden type="text" name="staff_member_id" id="staff_member_id" value="{{ old('staff_member_id', $staffAvailability->staff_member_id) }}">
+                    @endif
                     @if($errors->has('staff_member'))
                     <div class="invalid-feedback">
                         {{ $errors->first('staff_member') }}

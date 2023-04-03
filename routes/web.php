@@ -210,42 +210,6 @@ Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['
     Route::post('frontend/profile/password', 'ProfileController@password')->name('profile.password');
 });
 
-Route::group(['prefix' => 'staff', 'as' => 'staff.', 'namespace' => 'Staff', 'middleware' => ['auth']], function () {
-    Route::get('/', 'HomeController@index')->name('home');
-    // Users
-    Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
-    Route::resource('users', 'UsersController');
-
-    // Crm Status
-    Route::delete('crm-statuses/destroy', 'CrmStatusController@massDestroy')->name('crm-statuses.massDestroy');
-    Route::resource('crm-statuses', 'CrmStatusController');
-
-    // Crm Customer
-    Route::delete('crm-customers/destroy', 'CrmCustomerController@massDestroy')->name('crm-customers.massDestroy');
-    Route::resource('crm-customers', 'CrmCustomerController');
-
-    // Appointment
-    Route::delete('appointments/destroy', 'AppointmentController@massDestroy')->name('appointments.massDestroy');
-    Route::post('appointments/media', 'AppointmentController@storeMedia')->name('appointments.storeMedia');
-    Route::post('appointments/ckmedia', 'AppointmentController@storeCKEditorImages')->name('appointments.storeCKEditorImages');
-    Route::resource('appointments', 'AppointmentController');
-
-    // Client Tags
-    Route::delete('client-tags/destroy', 'ClientTagsController@massDestroy')->name('client-tags.massDestroy');
-    Route::resource('client-tags', 'ClientTagsController');
-
-    // Leave Application
-    Route::delete('leave-applications/destroy', 'LeaveApplicationController@massDestroy')->name('leave-applications.massDestroy');
-    Route::resource('leave-applications', 'LeaveApplicationController');
-
-    // Staff Availability
-    Route::delete('staff-availabilities/destroy', 'StaffAvailabilityController@massDestroy')->name('staff-availabilities.massDestroy');
-    Route::resource('staff-availabilities', 'StaffAvailabilityController');
-
-    Route::get('global-search', 'GlobalSearchController@search')->name('globalSearch');
-
-});
-
 Route::get('xero/connect', function(){
     return Xero::connect();
 });

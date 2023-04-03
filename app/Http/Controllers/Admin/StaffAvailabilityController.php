@@ -10,6 +10,7 @@ use App\Models\StaffAvailability;
 use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class StaffAvailabilityController extends Controller
@@ -18,7 +19,11 @@ class StaffAvailabilityController extends Controller
     {
         abort_if(Gate::denies('staff_availability_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $staffAvailabilities = StaffAvailability::with(['staff_member'])->get();
+        $staffAvailabilities = StaffAvailability::with(['staff_member']);
+        if (!auth()->user()->is_admin) {
+            $staffAvailabilities = $staffAvailabilities->where('staff_member_id', Auth::user()->id);
+        }
+        $staffAvailabilities = $staffAvailabilities->get();
 
         return view('admin.staffAvailabilities.index', compact('staffAvailabilities'));
     }
